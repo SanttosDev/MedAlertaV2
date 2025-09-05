@@ -10,5 +10,3 @@ git push
 
 3) quando quiserem atualizar seu repositorio local com a versao mais atual do repositório remoto:
 git pull
-
-oi
