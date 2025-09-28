@@ -183,7 +183,7 @@ public class Endereco {
         Endereco endereco = new Endereco(dadosEndereco[0], dadosEndereco[1]);
 
         for (int i = 2; i < 8; i++){
-            if (dadosEndereco[i] != "null"){
+            if (!dadosEndereco[i].equals("null")){
                 switch (i){
                     case 2:
                         endereco.setComplemento(dadosEndereco[i]);
