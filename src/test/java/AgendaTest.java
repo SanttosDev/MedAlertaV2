@@ -25,7 +25,7 @@ public class AgendaTest {
     }
 
     @Test
-    void testAdicionarContatoNulo() {
+    void testAdicionarContatoInvalido() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> agenda.adicionarContato(null));
         assertEquals("É necessário informar um contato válido", exception.getMessage());
     }
@@ -76,13 +76,13 @@ public class AgendaTest {
     }
 
     @Test
-    void testToStringComContato() {
+    void testStringComContato() {
         agenda.adicionarContato(contato);
         assertEquals("maria@teste.com", agenda.toString());
     }
 
     @Test
-    void testToStringVazio() {
+    void testStringVazio() {
         assertEquals("null", agenda.toString());
     }
 }
