@@ -38,4 +38,14 @@ public class EstoqueTest {
         assertEquals(20, estoque.listaEstoque.get(0).getQntMedicamento());
     }
 
+     @Test
+    void testRemoverMedicamento() {
+        ItemEstoque item = new ItemEstoque(medicamento1, 15);
+        estoque.addMedicamentoEstoque(item);
+
+        estoque.removerMedicamentoEstoque(item);
+
+        assertEquals(0, estoque.listaEstoque.size());
+    }
+
 }
