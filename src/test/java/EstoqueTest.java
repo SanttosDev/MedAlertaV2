@@ -29,4 +29,13 @@ public class EstoqueTest {
         assertEquals(10, estoque.listaEstoque.get(0).getQntMedicamento());
     }
 
+    @Test
+    void testAdicionarMedicamentoPorParametros() {
+        estoque.addMedicamentoEstoque(medicamento1, 20);
+
+        assertEquals(1, estoque.listaEstoque.size());
+        assertEquals("Paracetamol", estoque.listaEstoque.get(0).getMedicamento().getNome());
+        assertEquals(20, estoque.listaEstoque.get(0).getQntMedicamento());
+    }
+
 }
