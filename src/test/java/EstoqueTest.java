@@ -38,7 +38,7 @@ public class EstoqueTest {
         assertEquals(20, estoque.listaEstoque.get(0).getQntMedicamento());
     }
 
-     @Test
+    @Test
     void testRemoverMedicamento() {
         ItemEstoque item = new ItemEstoque(medicamento1, 15);
         estoque.addMedicamentoEstoque(item);
@@ -46,6 +46,15 @@ public class EstoqueTest {
         estoque.removerMedicamentoEstoque(item);
 
         assertEquals(0, estoque.listaEstoque.size());
+    }
+
+    @Test
+    void testAtualizarQuantidadeMedicamentoExistente() {
+        estoque.addMedicamentoEstoque(medicamento1, 30);
+
+        estoque.atualizarQntMedicamento(medicamento1, 50);
+
+        assertEquals(50, estoque.listaEstoque.get(0).getQntMedicamento());
     }
 
 }
