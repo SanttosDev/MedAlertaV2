@@ -1,0 +1,32 @@
+import backend.Medicamento;
+import backend.farmacia.Estoque;
+import backend.farmacia.ItemEstoque;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class EstoqueTest {
+
+    private Estoque estoque;
+    private Medicamento medicamento1;
+    private Medicamento medicamento2;
+
+    @BeforeEach
+    void setUp() {
+        estoque = new Estoque();
+        medicamento1 = new Medicamento("Paracetamol", "500mg", "Genérico");
+        medicamento2 = new Medicamento("Ibuprofeno", "400mg", "Genérico");
+    }
+
+    @Test
+    void testAdicionarMedicamentoPorObjeto() {
+        ItemEstoque item = new ItemEstoque(medicamento1, 10);
+        estoque.addMedicamentoEstoque(item);
+
+        assertEquals(1, estoque.listaEstoque.size());
+        assertEquals("Paracetamol", estoque.listaEstoque.get(0).getMedicamento().getNome());
+        assertEquals(10, estoque.listaEstoque.get(0).getQntMedicamento());
+    }
+
+}
