@@ -57,4 +57,14 @@ public class EstoqueTest {
         assertEquals(50, estoque.listaEstoque.get(0).getQntMedicamento());
     }
 
+    @Test
+    void testAtualizarQuantidadeMedicamentoInexistente() {
+        estoque.addMedicamentoEstoque(medicamento1, 30);
+
+        estoque.atualizarQntMedicamento(medicamento2, 40);
+
+        // Medicamento2 não existe, então não deve alterar nada
+        assertEquals(30, estoque.listaEstoque.get(0).getQntMedicamento());
+    }
+
 }
