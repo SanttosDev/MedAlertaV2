@@ -1,6 +1,14 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,6 +67,35 @@ public class PessoaTest {
         assertTrue(b.compareTo(c) < 0);   // "Bruno" < "Carlos"
         Pessoa b2 = new PessoaFisica("Bruno", "0000", "x@y.z", "000.000.000-00", "s", e);
         assertEquals(0, b.compareTo(b2));
+    }
+
+    @Test
+    void testPessoaToStringSemCriptografia() {
+        String esperado = "João,1234,joao@teste.com,senha123";
+        assertEquals(esperado, pessoa.PessoaToString(false));
+    }
+
+    @Test
+    void testPessoaToStringComCriptografia() {
+        String comCripto = pessoa.PessoaToString(true);
+        String semCripto = pessoa.PessoaToString(false);
+
+        assertTrue(comCripto.startsWith("João,1234,joao@teste.com,"));
+        assertNotEquals(semCripto, comCripto);
+        String[] partes = comCripto.split(",", -1);
+        assertEquals(4, partes.length);
+        String campoSenha = partes[3];
+        assertNotNull(campoSenha);
+        assertFalse(campoSenha.isEmpty());
+        assertNotEquals("senha123", campoSenha);
+    }
+
+    @Test
+    void testRecuperarObjetoArquivoInexistenteRetornaNull_semTempDir() {
+        String tmpDir = System.getProperty("java.io.tmpdir");
+        Path inexistente = Paths.get(tmpDir, "nao-existe-" + UUID.randomUUID() + ".obj");
+        Object recuperado = pessoa.recuperarObjetoArquivo(inexistente.toString());
+        assertNull(recuperado);
     }
 
 }
