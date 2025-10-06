@@ -11,3 +11,13 @@ Agradecemos imensamente a eles por terem criado esta base sólida. A partir de a
 **Integrantes:** Josué Santos, Ramon Jacinto, João Pedro Diniz, Bernado Mendes e Lucca Gomes.
 
 Projeto desenvolvido como trabalho para a disciplina de Qualidade e Teste - 2025/2
+
+Link do Plano de Teste Elaborado pelo Grupo - Docs Editavel
+
+https://docs.google.com/document/d/1EqaoBccHmXqlOrUYw152tLlTjNfBMR0k/edit?usp=sharing&ouid=105546231281879977225&rtpof=true&sd=true
+
+Link da Apresentação Referente a primeira entrega
+
+https://drive.google.com/file/d/1ojTRBvFRxTc_fNI74LD7ogrYetsWDK17/view?usp=sharing
+
+
