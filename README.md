@@ -12,6 +12,10 @@ Agradecemos imensamente a eles por terem criado esta base sólida. A partir de a
 
 Projeto desenvolvido como trabalho para a disciplina de Qualidade e Teste - 2025/2
 
+Link do Repositorio Original
+
+https://github.com/repo-software-testing-courses/MedAlertaV2
+
 Link do Plano de Teste Elaborado pelo Grupo - Docs Editavel
 
 https://docs.google.com/document/d/1EqaoBccHmXqlOrUYw152tLlTjNfBMR0k/edit?usp=sharing&ouid=105546231281879977225&rtpof=true&sd=true
