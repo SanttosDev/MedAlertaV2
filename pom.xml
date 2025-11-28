@@ -35,6 +35,11 @@
     <version>5.2.0</version>
     <scope>test</scope>
 </dependency>
+<dependency>
+    <groupId>org.assertj</groupId>
+    <artifactId>assertj-swing-junit</artifactId>
+    <version>3.17.1</version> <scope>test</scope>
+</dependency>
     </dependencies>
     
 
@@ -46,6 +51,70 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
             </plugin>
+            <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>3.2.5</version> <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+        <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.12</version> <executions>
+                <execution>
+                    <id>prepare-agent</id>
+                    <goals>
+                        <goal>prepare-agent</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <id>report</id>
+                    <phase>verify</phase>
+                    <goals>
+                        <goal>report</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+<plugin>
+    <groupId>org.pitest</groupId>
+    <artifactId>pitest-maven</artifactId>
+    <version>1.16.1</version>
+        <dependencies>
+        <dependency>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-junit5-plugin</artifactId>
+            <version>1.2.1</version> </dependency>
+    </dependencies>
+    <configuration>
+        <targetClasses>
+            <param>backend.gerenciamento.Data</param>
+            <param>backend.Agenda</param>
+            <param>backend.Endereco</param>
+        </targetClasses>
+        <targetTests>
+            <param>DataTest</param>
+            <param>AgendaTest</param>
+            <param>EnderecoTest</param>
+            <param>AgendaIT</param>
+        </targetTests>
+    </configuration>
+        <executions>
+        <execution>
+            <id>pitest-report</id>
+            <phase>verify</phase>
+            <goals>
+                <goal>mutationCoverage</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
         </plugins>
     </build>
 </project>
