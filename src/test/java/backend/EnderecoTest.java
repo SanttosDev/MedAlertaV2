@@ -1,3 +1,4 @@
+package backend;
 import backend.Endereco;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -67,5 +68,41 @@ class EnderecoTest {
         assertNull(e.getNomeDoEstado());
         assertNull(e.getNomeDoPais());
         assertNull(e.getCep());
+    }
+
+    @Test
+    @DisplayName("Setter e Getter de todos os campos")
+    void testeSettersGetters() {
+        Endereco e = new Endereco("Rua A", "10");
+
+        e.setComplemento("Ap 201");
+        e.setNomeDoBairro("Centro");
+        e.setNomeDaCidade("Niterói");
+        e.setNomeDoEstado("RJ");
+        e.setNomeDoPais("Brasil");
+        e.setCep("00000-000");
+
+        assertAll(
+                () -> assertEquals("Rua A", e.getNomeDaRua()),
+                () -> assertEquals("10", e.getNumero()),
+                () -> assertEquals("Ap 201", e.getComplemento()),
+                () -> assertEquals("Centro", e.getNomeDoBairro()),
+                () -> assertEquals("Niterói", e.getNomeDaCidade()),
+                () -> assertEquals("RJ", e.getNomeDoEstado()),
+                () -> assertEquals("Brasil", e.getNomeDoPais()),
+                () -> assertEquals("00000-000", e.getCep())
+        );
+    }
+    @Test
+    @DisplayName("Construtor com rua, número e complemento")
+    void construtorComComplemento() {
+        Endereco e = new Endereco("Rua", "123", "teste");
+        assertEquals("Rua/123/teste/null/null/null/null/null", e.toString());
+    }
+    @Test
+    @DisplayName("toStringFront com alguns campos null")
+    void toStringFrontParcial() {
+        Endereco e = new Endereco("Rua", "15", "Apt");
+        assertEquals("Rua,15,Apt", e.toStringFront());
     }
 }

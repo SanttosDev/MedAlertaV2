@@ -99,16 +99,13 @@
     </dependencies>
     <configuration>
         <targetClasses>
-            <param>backend.gerenciamento.Data</param>
-            <param>backend.Agenda</param>
-            <param>backend.Endereco</param>
+            <param>backend.*</param>
         </targetClasses>
         <targetTests>
-            <param>DataTest</param>
-            <param>AgendaTest</param>
-            <param>EnderecoTest</param>
-            <param>AgendaIT</param>
+            <param>backend.*</param>
+            <param>java.*</param>
         </targetTests>
+        <timeoutConstant>5000</timeoutConstant> 
     </configuration>
         <executions>
         <execution>
