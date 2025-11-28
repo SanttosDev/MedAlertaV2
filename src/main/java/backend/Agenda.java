@@ -32,7 +32,7 @@ public class Agenda {
     }
 
     // busca o contato na agenda e altera seu telefone
-    boolean alterarNomeContato(String nome, String novoNome) {
+    public boolean alterarNomeContato(String nome, String novoNome) {
         int pos = encontraContato(nome);
         if (pos == -1) {
             System.out.println("Contato não encontrado! A alteração não foi realizada.");
