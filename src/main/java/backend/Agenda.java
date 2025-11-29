@@ -2,160 +2,119 @@ package backend;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import backend.farmacia.PessoaJuridica;
 import backend.usuario.Medico;
 import backend.usuario.PessoaFisica;
 
 public class Agenda {
-    private ArrayList<Pessoa> contatos = new ArrayList<>();
 
-    // encontra a posicao do contato na agenda
-    private int encontraContato(String nome) {
-        int i = 0;
-        for (Pessoa contato : this.contatos) {
-            if (contato.getNome().equals(nome))
-                return i;
-            i++;
-        }
-        return -1;
+    private ArrayList<Pessoa> contatos;
+
+    public Agenda() {
+        this.contatos = new ArrayList<>();
     }
 
-    // adiciona o contato a agenda
-    public void adicionarContato(Pessoa contato) throws IllegalArgumentException {
+    private Optional<Pessoa> buscarPessoa(String nome) {
+        return contatos.stream()
+                .filter(p -> p.getNome().equals(nome))
+                .findFirst();
+    }
+
+    public void adicionarContato(Pessoa contato) {
         if (contato == null) {
             throw new IllegalArgumentException("É necessário informar um contato válido");
-        } else {
-            contatos.add(contato);
-            System.out.println("Contato Adicionado!");
         }
+        contatos.add(contato);
     }
 
-    // busca o contato na agenda e altera seu telefone
     public boolean alterarNomeContato(String nome, String novoNome) {
-        int pos = encontraContato(nome);
-        if (pos == -1) {
-            System.out.println("Contato não encontrado! A alteração não foi realizada.");
-            return false;
-        } else {
-            contatos.get(pos).setNome(novoNome);
-            System.out.println("O nome de " + contatos.get(pos).getNome() + " foi alterado!");
+        Optional<Pessoa> p = buscarPessoa(nome);
+        if (p.isPresent()) {
+            p.get().setNome(novoNome);
+            return true;
         }
-        return true;
+        return false;
     }
 
-    // busca o contato na agenda e altera seu telefone
     public boolean alterarTelContato(String nome, String novoTelefone) {
-        int pos = encontraContato(nome);
-        if (pos == -1) {
-            System.out.println("Contato não encontrado! A alteração não foi realizada.");
-            return false;
-        } else {
-            contatos.get(pos).setTelefone(novoTelefone);
-            System.out.println("O telefone de " + contatos.get(pos).getNome() + " foi alterado!");
+        Optional<Pessoa> p = buscarPessoa(nome);
+        if (p.isPresent()) {
+            p.get().setTelefone(novoTelefone);
+            return true;
         }
-        return true;
+        return false;
     }
 
-    // busca o contato na agenda e altera seu endereco ou especialidade
     public <T> boolean alterarParticularidadeContato(String nome, T novaParticularidade) {
-        int pos = encontraContato(nome);
-        if (pos == -1) {
-            System.out.println("Contato não encontrado! A alteração não foi realizada.");
-            return false;
-        } else {
-            contatos.get(pos).setParticularidade(novaParticularidade);
-            ;
-            System.out.println("O atributo de " + contatos.get(pos).getNome() + " foi alterado!");
+        Optional<Pessoa> p = buscarPessoa(nome);
+        if (p.isPresent()) {
+            p.get().setParticularidade(novaParticularidade);
+            return true;
         }
-        return true;
+        return false;
     }
 
-    // busca o contato na agenda e altera seu email
     public boolean alterarEmailContato(String nome, String novoEmail) {
-        int pos = encontraContato(nome);
-        if (pos == -1) {
-            System.out.println("Contato não encontrado! A alteração não foi realizada.");
-            return false;
-        } else {
-            contatos.get(pos).setEmail(novoEmail);
-            ;
-            System.out.println("O endereço de " + contatos.get(pos).getNome() + " foi alterado!");
+        Optional<Pessoa> p = buscarPessoa(nome);
+        if (p.isPresent()) {
+            p.get().setEmail(novoEmail);
+            return true;
         }
-        return true;
+        return false;
     }
 
-    // busca o contato na agenda e o remove
     public boolean removerContato(String nome) {
-        int pos = encontraContato(nome);
-        if (pos == -1) {
-            System.out.println("Contato não encontrado!");
-            return false;
-        } else {
-            ArrayList<Pessoa> novaLista = this.getContatos();
-            
-            for (Pessoa contato : this.getContatos()){
-                if (contato.getNome().equals(nome)){
-                    novaLista.remove(contato);
-                    break;
-                }
-            }
-            this.setContatos(novaLista);
+        return contatos.removeIf(p -> p.getNome().equals(nome));
+    }
+
+    public ArrayList<Pessoa> getContatos() {
+        if (!contatos.isEmpty()) {
+            Collections.sort(contatos);
         }
-        return true;
-    }
-
-    // ordena lista de contatos pelo nome para exibi-la na tela
-    private void ordenarListaDeContatos() {
-        Collections.sort(contatos); // ================== > a atualizar
-    }
-
-    //get contatos
-    public ArrayList<Pessoa>getContatos() {
-        ordenarListaDeContatos();
         return contatos;
     }
 
-    public void setContatos(ArrayList<Pessoa> novosContatos){
-        this.contatos = novosContatos;
+    public void setContatos(ArrayList<Pessoa> novosContatos) {
+        if (novosContatos == null) {
+            this.contatos = new ArrayList<>();
+        } else {
+            this.contatos = novosContatos;
+        }
     }
 
     @Override
-    public String toString(){
-
-        if (this.getContatos().size() == 0){
-            return "null";
-        }
-        else{
-            ArrayList<String> listaNomesAgenda = new ArrayList<String>();
+    public String toString() {
+        if (contatos.isEmpty()) return "null";
         
-        for (Pessoa pessoa : this.contatos){
-            listaNomesAgenda.add(pessoa.getEmail());
-        }
-
-        String contatosString = String.join("/", listaNomesAgenda);
-        return contatosString;
-        }
+        return contatos.stream()
+                .map(Pessoa::getEmail)
+                .collect(Collectors.joining("/"));
     }
 
-    public static Agenda stringToAgenda(String agendaString, String senhaFornecida, String tipoContato, Boolean ignorarSenha, Boolean ignorarAgenda){
+    public static Agenda stringToAgenda(String agendaString, String senha, String tipo, Boolean ignSenha, Boolean ignAgenda) {
         Agenda agenda = new Agenda();
-        String[] nomeContatos = agendaString.split("/");
+        
+        if (agendaString == null || agendaString.isEmpty()) {
+            return agenda;
+        }
 
-        for (String nome : nomeContatos){
-            if (tipoContato.equals("usuario")){
-                PessoaFisica contato = PessoaFisica.resgatarUsuarioArquivo(nome, senhaFornecida, ignorarSenha, ignorarAgenda);
-                agenda.adicionarContato(contato);
-            }
-            if (tipoContato.equals("farmacia")){
-                PessoaJuridica farmacia = PessoaJuridica.resgatarFarmaciaArquivo(nome, senhaFornecida, ignorarSenha, ignorarAgenda);
-                agenda.adicionarContato(farmacia);
-            }
+        String[] nomes = agendaString.split("/");
 
-            if (tipoContato.equals("medico")){
-                Medico medico = Medico.resgatarMedicoArquivo(nome, senhaFornecida, ignorarSenha);
-                agenda.adicionarContato(medico);
+        try {
+            for (String nome : nomes) {
+                if ("usuario".equals(tipo)) {
+                    agenda.adicionarContato(PessoaFisica.resgatarUsuarioArquivo(nome, senha, ignSenha, ignAgenda));
+                } else if ("farmacia".equals(tipo)) {
+                    agenda.adicionarContato(PessoaJuridica.resgatarFarmaciaArquivo(nome, senha, ignSenha, ignAgenda));
+                } else if ("medico".equals(tipo)) {
+                    agenda.adicionarContato(Medico.resgatarMedicoArquivo(nome, senha, ignSenha));
+                }
             }
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao carregar dados", e);
         }
         return agenda;
     }
