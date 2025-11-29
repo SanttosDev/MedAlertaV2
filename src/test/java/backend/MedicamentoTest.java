@@ -55,8 +55,8 @@ public class MedicamentoTest {
     @Test
     @DisplayName("toString deve formatar atributos separados por vírgula")
     void testaToString() {
-        Medicamento m = new Medicamento("Aspirina", 10.0f, "BLISTER", "Comprimido", "Dor", false);
-        String esperado = "Aspirina,10.0,BLISTER,Comprimido,Dor,false";
+        Medicamento m = new Medicamento("Aspirina", 10.0f, "especificacao", "Comprimido", "Dor", false);
+        String esperado = "Aspirina,10.0,especificacao,Comprimido,Dor,false";
         
         assertEquals(esperado, m.toString());
     }
