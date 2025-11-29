@@ -1,8 +1,13 @@
 package backend.farmacia;
 
+import java.io.Serializable;
+
 import backend.Medicamento;
 
-public class ItemEstoque {
+public class ItemEstoque implements Serializable{
+    
+    private static final long serialVersionUID = 1L;
+
     private Medicamento medicamento;
     private int qntMedicamento;
 

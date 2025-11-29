@@ -1,11 +1,17 @@
 package backend.farmacia;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import backend.Medicamento;
 
-public class Estoque {
+public class Estoque implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    
     public ArrayList<ItemEstoque> listaEstoque;
+
+
 
     public Estoque(){
         this.listaEstoque = new ArrayList<ItemEstoque>();

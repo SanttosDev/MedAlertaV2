@@ -1,13 +1,14 @@
 package backend;
 
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.io.*;
 
 //pessoa no sentido de pessoa fisica ou pessoa juridica
 public abstract class Pessoa implements Comparable<Pessoa>, Serializable {
+    
+    private static final long serialVersionUID = 1L;
+
     private String nome; // nome da pessoa ou razao social
     private String telefone;
     private String email;

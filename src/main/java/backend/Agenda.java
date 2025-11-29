@@ -8,8 +8,11 @@ import java.util.stream.Collectors;
 import backend.farmacia.PessoaJuridica;
 import backend.usuario.Medico;
 import backend.usuario.PessoaFisica;
+import java.io.Serializable;
 
-public class Agenda {
+public class Agenda implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private ArrayList<Pessoa> contatos;
 

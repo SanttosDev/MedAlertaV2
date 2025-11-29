@@ -150,19 +150,25 @@ public class FuncoesArquivos {
     }
 
     // importante
-    public static void salvarListaEmArquivo(String nomeArquivo, List<String> listaLinhas, boolean append){
-        try{
-            FileWriter fw = new FileWriter(nomeArquivo, append);
-            BufferedWriter bw = new BufferedWriter(fw);
+    // Em backend/FuncoesArquivos.java
 
-            for (String linha : listaLinhas){
+    public static void salvarListaEmArquivo(String nomeArquivo, List<String> listaLinhas, boolean append) {
+        File arquivo = new File(nomeArquivo);
+        
+        // --- CORREÇÃO: CRIA AS PASTAS SE NÃO EXISTIREM ---
+        if (arquivo.getParentFile() != null && !arquivo.getParentFile().exists()) {
+            arquivo.getParentFile().mkdirs();
+        }
+
+        try (FileWriter fw = new FileWriter(arquivo, append);
+            BufferedWriter bw = new BufferedWriter(fw)) {
+
+            for (String linha : listaLinhas) {
                 bw.write(linha);
                 bw.newLine();
             }
-            bw.close();
-        }
-        catch (Exception e){
-            System.out.println("erro, n foi possivel escrever no arquivo: " + nomeArquivo);
+        } catch (IOException e) {
+            System.out.println("Erro ao escrever no arquivo: " + nomeArquivo);
             e.printStackTrace();
         }
     }
@@ -278,4 +284,6 @@ public class FuncoesArquivos {
             return false;
         }
     }
+
+    
 }

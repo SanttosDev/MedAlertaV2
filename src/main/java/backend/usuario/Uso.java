@@ -2,10 +2,14 @@ package backend.usuario;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.io.Serializable;
 
 import backend.Medicamento;
 
-public class Uso {
+public class Uso implements Serializable {
+    
+    private static final long serialVersionUID = 1L;
+
     private Medicamento remedio;
     private int dose; //comprimidos, ml
     private String tipoDoRemedio; //comprimido, xarope
