@@ -1,0 +1,56 @@
+## Intruções Git/GitHub
+
+**Aqui vão algumas dicas e sugestões para a utilização do git no nosso projeto**
+
+### 1. Clonar o repositório (primeira vez)
+
+- Use esse comando só na primeira vez, para baixar o projeto para sua máquina:
+
+    ````text
+    git clone <URL_DO_REPOSITORIO>
+    ````
+### 2. Antes de fazer uma nova alteração: atualizar o repositório local`
+
+- Sempre que você for começar a mexer no código, primeiro garanta que está com a versão mais recente do repositório remoto:
+
+    ````text
+    git pull
+    ````
+ - Isso evita conflito e trabalho em código desatualizado.
+
+### 3. Ver o que mudou
+
+- Para ver quais arquivos foram modificados, adicionados ou removidos:
+
+    ````text
+    git status
+    ````
+
+### 4. Enviar alterações para o repositório remoto
+
+- Depois de fazer as mudanças no código:
+
+    - Adicionar os arquivos alterados:
+
+        ````text
+        git add .
+        ````
+    - o ponto significa “adicionar todos os arquivos alterados”, se quiser adicionar um arquivo específico:
+
+        ````text
+        git add <nome do arquivo>
+        ````
+
+### 5. Criar um commit com uma mensagem explicando o que foi feito:
+
+    ````text
+    git commit -m "descrição das mudanças que você fez"
+    ````
+
+- (a mensagem entre aspas deve resumir bem as alterações)
+
+### 6. Enviar as alterações para o repositório remoto:
+
+````text
+git push
+````
