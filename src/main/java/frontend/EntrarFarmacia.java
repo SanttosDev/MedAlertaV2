@@ -20,6 +20,9 @@ public class EntrarFarmacia extends javax.swing.JFrame {
      */
     public EntrarFarmacia() {
         initComponents();
+        emailEntradaE.setName("campoEmail");
+        senhaEntradaE.setName("campoSenha");
+        prox_l.setName("botaoEntrar");
     }
 
     /**
