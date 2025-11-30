@@ -68,4 +68,23 @@ public class EstoqueTest {
         assertEquals(30, estoque.listaEstoque.get(0).getQntMedicamento());
     }
 
+    @Test
+    void testPrintEstoque() {
+        estoque.addMedicamentoEstoque(medicamento1, 10);
+        estoque.addMedicamentoEstoque(medicamento2, 5);
+
+        java.io.ByteArrayOutputStream outContent = new java.io.ByteArrayOutputStream();
+        System.setOut(new java.io.PrintStream(outContent));
+        
+        estoque.printEstoque();
+        String output = outContent.toString();
+
+        assertTrue(output.contains("medicamento: Paracetamol / qnt: 10"));
+        assertTrue(output.contains("medicamento: Ibuprofeno / qnt: 5"));
+        assertTrue(output.contains("----------"));
+        
+        System.setOut(System.out);
+    }
+
+
 }
