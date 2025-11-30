@@ -117,7 +117,7 @@ public class Endereco implements Serializable {
 
     @Override
     public String toString(){
-        ArrayList<String> listaValoresAtributos = new ArrayList<String>();
+        ArrayList<String> listaValoresAtributos = new ArrayList<>();
         listaValoresAtributos.add(this.getNomeDaRua());
         listaValoresAtributos.add(this.getNumero());
 
@@ -163,8 +163,7 @@ public class Endereco implements Serializable {
             listaValoresAtributos.add("null");
         }
 
-        String enderecoString = String.join("/", listaValoresAtributos);
-        return enderecoString;
+        return String.join("/", listaValoresAtributos);
     }
 
     public String toStringFront(){
@@ -178,8 +177,7 @@ public class Endereco implements Serializable {
             }
         }
 
-        String enderecoStringFront = String.join(",", listaTemp);
-        return enderecoStringFront;
+        return String.join(",", listaTemp);
     }
 
     public static Endereco stringToEndereco(String enderecoString){
@@ -207,6 +205,9 @@ public class Endereco implements Serializable {
                     case 7:
                         endereco.setCep(dadosEndereco[i]);
                         break;
+
+                    default: 
+                        break; 
                 }
             }
         }
