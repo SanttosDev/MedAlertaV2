@@ -17,6 +17,7 @@ Nosso objetivo é não apenas testar o software, mas evoluir sua qualidade por m
 ## Links Importantes
 
 - [**Repositório Original**](https://github.com/repo-software-testing-courses/MedAlertaV2)
+- [**Pasta com instruções para rodar o projeto**](./Instruções/)
 
 ### Primeira Entrega
 
