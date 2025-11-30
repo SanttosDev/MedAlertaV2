@@ -13,6 +13,10 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source> <!-- ou 11, 1.8, etc -->
         <maven.compiler.target>17</maven.compiler.target>
+
+        <sonar.projectKey>MedAlerta</sonar.projectKey>
+        <sonar.projectName>MedAlerta</sonar.projectName>
+        <sonar.host.url>http://localhost:9000</sonar.host.url>
     </properties>
 
     <dependencies>
@@ -57,66 +61,71 @@
                 <version>3.2.5</version>
             </plugin>
             <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <version>3.2.5</version> <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-        <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <version>0.8.12</version> <executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.2.5</version> <executions>
                 <execution>
-                    <id>prepare-agent</id>
                     <goals>
-                        <goal>prepare-agent</goal>
+                    <goal>integration-test</goal>
+                    <goal>verify</goal>
                     </goals>
                 </execution>
-                <execution>
-                    <id>report</id>
-                    <phase>verify</phase>
-                    <goals>
-                        <goal>report</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-<plugin>
-    <groupId>org.pitest</groupId>
-    <artifactId>pitest-maven</artifactId>
-    <version>1.16.1</version>
-        <dependencies>
-        <dependency>
-            <groupId>org.pitest</groupId>
-            <artifactId>pitest-junit5-plugin</artifactId>
-            <version>1.2.1</version> </dependency>
-    </dependencies>
-    <configuration>
-        <targetClasses>
-            <param>backend.*</param>
-        </targetClasses>
-        <targetTests>
-            <param>backend.*</param>
-            <param>java.*</param>
-        </targetTests>
-        <timeoutConstant>5000</timeoutConstant> 
-    </configuration>
-        <executions>
-        <execution>
-            <id>pitest-report</id>
-            <phase>verify</phase>
-            <goals>
-                <goal>mutationCoverage</goal>
-            </goals>
-        </execution>
-    </executions>
-</plugin>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version> <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <version>1.16.1</version>
+                    <dependencies>
+                    <dependency>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-junit5-plugin</artifactId>
+                        <version>1.2.1</version> </dependency>
+                </dependencies>
+                <configuration>
+                    <targetClasses>
+                        <param>backend.*</param>
+                    </targetClasses>
+                    <targetTests>
+                        <param>backend.*</param>
+                        <param>java.*</param>
+                    </targetTests>
+                    <timeoutConstant>5000</timeoutConstant> 
+                </configuration>
+                    <executions>
+                    <execution>
+                        <id>pitest-report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>mutationCoverage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>5.3.0.6276</version>
+            </plugin>
         </plugins>
     </build>
 </project>
