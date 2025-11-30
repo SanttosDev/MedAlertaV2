@@ -22,7 +22,7 @@ class SistemaIntegrationTest {
     @Test
     @DisplayName("Integração: Fluxo completo de Criar Usuário -> Adicionar Uso -> Salvar -> Recuperar")
     void testCicloCompletoDePersistencia() {
-        // --- 1. CONFIGURAÇÃO (ARRANGE) ---
+        // --- 1. CONFIGURAÇÃO  ---
         
         // Define caminhos de arquivo dentro da pasta temporária segura
         File arquivoUsuario = diretorioTemporario.resolve("usuario_teste.bin").toFile();
@@ -47,13 +47,12 @@ class SistemaIntegrationTest {
         
         // Uso: Remedio, dose, dias, duração(dias), qtdDisponivel, horaInicio, intervalo
         Uso usoOriginal = new Uso(remedio, 1, dias, 7, 20, 8, 8); 
-        usoOriginal.calcularHorariosDeUso(); // Método importante da regra de negócio
+        usoOriginal.calcularHorariosDeUso();
 
         usuarioOriginal.adicionarUsoNaListaUsoMedicamentos(usoOriginal);
 
-        // --- 2. AÇÃO (ACT) ---
+        // --- 2. AÇÃO 
         
-        // Nota: Seu sistema usa 'salvarObjetoArquivo' na classe mãe Pessoa
         usuarioOriginal.salvarObjetoArquivo(caminhoArquivo, usuarioOriginal);
 
         // --- 3. VERIFICAÇÃO (ASSERT) - Parte 1: Arquivo ---
