@@ -19,11 +19,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
-import backend.Endereco;
-import backend.Pessoa;
 import backend.usuario.PessoaFisica;
 
-public class PessoaTest {
+class PessoaTest {
     
      private Pessoa pessoa;
 
