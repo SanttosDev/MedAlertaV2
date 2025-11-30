@@ -2,19 +2,20 @@ package backend;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.io.Serializable;
 
 import backend.farmacia.PessoaJuridica;
 import backend.usuario.Medico;
 import backend.usuario.PessoaFisica;
-import java.io.Serializable;
 
 public class Agenda implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private ArrayList<Pessoa> contatos;
+    private List<Pessoa> contatos;
 
     public Agenda() {
         this.contatos = new ArrayList<>();
@@ -73,14 +74,14 @@ public class Agenda implements Serializable {
         return contatos.removeIf(p -> p.getNome().equals(nome));
     }
 
-    public ArrayList<Pessoa> getContatos() {
+    public List<Pessoa> getContatos() {
         if (!contatos.isEmpty()) {
             Collections.sort(contatos);
         }
         return contatos;
     }
 
-    public void setContatos(ArrayList<Pessoa> novosContatos) {
+    public void setContatos(List<Pessoa> novosContatos) {
         if (novosContatos == null) {
             this.contatos = new ArrayList<>();
         } else {
@@ -117,8 +118,16 @@ public class Agenda implements Serializable {
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao carregar dados", e);
+            throw new AgendaException("Erro crítico ao carregar dados da agenda para o tipo: " + tipo, e);
         }
         return agenda;
+    }
+    
+    public static class AgendaException extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+
+        public AgendaException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
 }
