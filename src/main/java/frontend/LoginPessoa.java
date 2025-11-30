@@ -21,6 +21,22 @@ public class LoginPessoa extends javax.swing.JFrame {
      */
     public LoginPessoa() {
         initComponents();
+
+        emailLPE.setName("loginEmail");
+        senhaLPE.setName("loginSenha"); // Lembre que é um JPasswordField
+        prox_l.setName("botaoEntrar");
+        nome_l_e.setName("campoNome");
+        idade_l_e.setName("campoCpf");
+        emailLPE.setName("campoEmail");
+        senhaLPE.setName("campoSenha");
+        telefoneL.setName("campoTelefone");
+        
+        // Endereço
+        ruaL.setName("campoRua");
+        numeroL.setName("campoNumero");
+        complementoL.setName("campoComplemento");
+        
+        prox_l.setName("botaoFinalizarCadastro");
     }
 
     /**

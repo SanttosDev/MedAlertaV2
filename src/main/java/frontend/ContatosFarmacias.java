@@ -17,6 +17,14 @@ public class ContatosFarmacias extends javax.swing.JFrame {
     public void receber(PessoaFisica pessoa){
         this.pessoa = pessoa;
         initComponents();
+
+        novaFarmacia.setName("botaoNovaFarmacia");
+        nomeFarmacia.setName("campoNomeFarmacia");
+        numeroFarmacia.setName("campoTelefoneFarmacia");
+        enderecoFarmacia.setName("campoEnderecoFarmacia");
+        salvarFarmacia.setName("botaoSalvarFarmacia");
+        tabelaFarmacia.setName("tabelaFarmacias");
+        voltar.setName("botaoVoltarFarmacia");
     }
     /**
      * This method is called from within the constructor to initialize the form.

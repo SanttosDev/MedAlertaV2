@@ -16,6 +16,16 @@ public class Inicio extends javax.swing.JFrame implements Runnable {
      */
     public Inicio() {
         initComponents();
+        
+        // jButton1 abre 'LoginPessoa' (que é a tela de Cadastro)
+        jButton1.setName("botaoIrParaCadastro"); 
+        
+        // jButton3 abre 'EntrarPessoa' (que é a tela de Login)
+        jButton3.setName("botaoIrParaLogin");
+        
+        // Outros botões (se for testar farmácia depois)
+        jButton2.setName("botaoCadastroFarmacia");
+        jButton4.setName("botaoLoginFarmacia");
     }
 
     /**
