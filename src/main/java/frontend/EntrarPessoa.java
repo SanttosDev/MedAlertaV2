@@ -21,6 +21,11 @@ public class EntrarPessoa extends javax.swing.JFrame {
      */
     public EntrarPessoa() {
         initComponents();
+
+        emailEntradaE.setName("loginEmail");
+        senhaEntradaE.setName("loginSenha");
+        prox_l.setName("botaoEntrar");
+        
     }
 
     /**

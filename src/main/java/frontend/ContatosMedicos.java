@@ -19,6 +19,15 @@ public class ContatosMedicos extends javax.swing.JFrame {
     public void receber(PessoaFisica pessoa){
         this.pessoa = pessoa;
         initComponents();
+
+        novoContato.setName("botaoNovoMedico");
+        nomeMedico.setName("campoNomeMedico");
+        numeroMedico.setName("campoTelefoneMedico");
+        especialidadeMedico.setName("campoEspecialidadeMedico");
+        salvarContato.setName("botaoSalvarMedico");
+        tabelaContato.setName("tabelaMedicos");
+        voltar.setName("botaoVoltarMedico");
+        excluirContato.setName("botaoExcluirMedico");
     }
     @SuppressWarnings("unchecked")
                     

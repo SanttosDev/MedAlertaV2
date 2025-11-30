@@ -27,6 +27,19 @@ public class ListaRemedios extends javax.swing.JFrame {
     public void receber(PessoaFisica pessoa){
         this.pessoa = pessoa;
         initComponents();
+
+        novoRemedio.setName("botaoNovo");
+        nomeRemedio.setName("campoNomeRemedio");
+        quantidadeRemedio.setName("campoQtd");
+        doseRemedio.setName("campoDose");
+        duracaoRemedio.setName("campoDuracao");
+        horaRemedio.setName("comboHora");
+        intervaloRemedio.setName("comboIntervalo");
+        segunda.setName("checkSegunda"); 
+        salvar.setName("botaoSalvar");
+        tabelaRemedio.setName("tabelaRemedios");
+        voltar.setName("botaoVoltarRemedio");
+        
     }
 
     /**
