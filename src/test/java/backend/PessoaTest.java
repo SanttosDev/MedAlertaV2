@@ -1,18 +1,23 @@
 package backend;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mockStatic;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
 import backend.Endereco;
 import backend.Pessoa;
@@ -99,4 +104,62 @@ public class PessoaTest {
         assertNull(recuperado);
     }
 
+    @Test
+    void testPessoaToStringSemParametroFormatoCorreto() {
+        String esperado = "João,1234,joao@teste.com,senha123";
+        assertEquals(esperado, pessoa.PessoaToString());
+    }
+
+    @Test
+    void testSalvarERecuperarObjetoArquivoFunciona() throws Exception {
+        String tmpDir = System.getProperty("java.io.tmpdir");
+        Path arquivo = Files.createTempFile(Paths.get(tmpDir), "pessoa-", ".obj");
+
+        try {
+            // salva a própria pessoa
+            pessoa.salvarObjetoArquivo(arquivo.toString(), pessoa);
+
+            // recupera
+            Object recuperado = pessoa.recuperarObjetoArquivo(arquivo.toString());
+            assertNotNull(recuperado);
+            assertTrue(recuperado instanceof PessoaFisica);
+
+            PessoaFisica pf = (PessoaFisica) recuperado;
+
+            assertEquals(pessoa.getNome(), pf.getNome());
+            assertEquals(pessoa.getTelefone(), pf.getTelefone());
+            assertEquals(pessoa.getEmail(), pf.getEmail());
+            assertEquals(pessoa.getSenha(), pf.getSenha());
+        } finally {
+            Files.deleteIfExists(arquivo);
+        }
+    }
+
+    @Test
+    void testPessoaToStringComCriptografia_quandoEncriptacaoFalhaNaoExplode() throws Exception {
+        try (MockedStatic<Autenticacao> mock = mockStatic(Autenticacao.class)) {
+            mock.when(() -> Autenticacao.encriptarSenha(anyString(), anyString()))
+                .thenThrow(new NoSuchAlgorithmException());
+
+            String resultado = pessoa.PessoaToString(true);
+
+            String[] partes = resultado.split(",", -1);
+            assertEquals(4, partes.length);
+            assertEquals("João", partes[0]);
+            assertEquals("1234", partes[1]);
+            assertEquals("joao@teste.com", partes[2]);
+        }
+    }
+
+    @Test
+    void testSalvarObjetoArquivoObjetoNaoSerializavelCaiNoCatchSemLancar() {
+        String tmpDir = System.getProperty("java.io.tmpdir");
+        Path arquivo = Paths.get(tmpDir, "pessoa-nao-serializavel-" + UUID.randomUUID() + ".obj");
+
+        Object objetoNaoSerializavel = new Object();
+
+        assertDoesNotThrow(() ->
+            pessoa.salvarObjetoArquivo(arquivo.toString(), objetoNaoSerializavel)
+        );
+    }
 }
