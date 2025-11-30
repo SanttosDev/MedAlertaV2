@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class EnderecoTest {
 
 
+    
 
     @Test
     @DisplayName("Conversão completa para string com todos os campos preenchidos")
