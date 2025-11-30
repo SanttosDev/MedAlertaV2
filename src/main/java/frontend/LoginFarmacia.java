@@ -16,6 +16,16 @@ public class LoginFarmacia extends javax.swing.JFrame {
      */
     public LoginFarmacia() {
         initComponents();
+
+        emailLFE.setName("campoEmail");
+        senhaLFE.setName("campoSenha");
+        nomeFarmaciaEntrada.setName("campoNome");
+        cnpjFarmaciaEntrada.setName("campoCnpj");
+        numeroDaFarmaciaEntrada.setName("campoTelefone");
+        ruaLF.setName("campoRua");
+        numeroL.setName("campoNumero");
+        complementoLF.setName("campoComplemento");
+        proximoFarmacia.setName("botaoCadastrar");
     }
 
     /**
