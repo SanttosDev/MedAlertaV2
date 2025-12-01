@@ -7,14 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.lang.reflect.Field;
 import java.nio.file.Path;
 import org.junit.jupiter.api.io.TempDir;
-import backend.Medicamento;
-import java.util.List;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
