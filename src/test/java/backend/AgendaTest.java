@@ -26,7 +26,10 @@ class AgendaTest {
             super(nome, "0000-0000", email, "1234"); 
         }
         @Override public Object getParticularidade() { return null; }
-        @Override public <T> void setParticularidade(T novaParticularidade) { }
+        @Override 
+        public <T> void setParticularidade(T novaParticularidade) { 
+            // Método intencionalmente vazio para fins de teste (Stub)
+        }
     }
 
     @BeforeEach

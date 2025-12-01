@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class EstoqueTest {
+class EstoqueTest {
 
     private Estoque estoque;
     private Medicamento medicamento1;

@@ -1,5 +1,7 @@
 package frontend;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
@@ -26,5 +28,9 @@ public class PessoaEntrarTest extends AssertJSwingJUnitTestCase {
         window.button("botaoEntrar").click();
 
         window.optionPane().requireInformationMessage().requireMessage("Erro, email ou senha incorretos!");
+
+        var dialog = window.optionPane();
+        dialog.requireInformationMessage().requireMessage("Erro, email ou senha incorretos!");
+        assertNotNull(dialog);
     }
 }
