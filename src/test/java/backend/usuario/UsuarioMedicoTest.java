@@ -16,7 +16,7 @@ import org.mockito.ArgumentCaptor;
 import java.util.List;
 import backend.FuncoesArquivos;
 
-public class UsuarioMedicoTest {
+class UsuarioMedicoTest {
 
     private Medico medico;
 
