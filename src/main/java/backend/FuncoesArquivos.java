@@ -1,289 +1,256 @@
 package backend;
 
-import java.io.*;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FuncoesArquivos {
 
-    public static void criarArquivo(String nomeArquivo){
-        try{
-            File arquivo = new File(nomeArquivo);
-            if (arquivo.createNewFile()){
-                System.out.println("arquivo criado: " + arquivo.getName());
+    private static final Logger LOGGER = Logger.getLogger(FuncoesArquivos.class.getName());
+    private static final String ERROR_PREFIX = "Erro: ";
+
+    public static void criarArquivo(String nomeArquivo) {
+        File arquivo = new File(nomeArquivo);
+        try {
+            if (arquivo.createNewFile()) {
+                LOGGER.info(() -> "Arquivo criado: " + arquivo.getName());
+            } else {
+                LOGGER.info(() -> "Arquivo já existe: " + arquivo.getName());
             }
-            else{
-                System.out.println("arquivo ja existe!");
-            }
-        }
-        catch (IOException e){
-            System.out.println("Erro: ");
-            e.printStackTrace();
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, e, () -> ERROR_PREFIX + "ao criar arquivo " + nomeArquivo);
         }
     }
 
-    public static void escreverArquivo(String nomeArquivo, String linha){
-        try{
-            FileWriter escritorArquivo = new FileWriter(nomeArquivo);
+    public static void escreverArquivo(String nomeArquivo, String linha) {
+        try (FileWriter escritorArquivo = new FileWriter(nomeArquivo)) {
             escritorArquivo.write(linha);
-            escritorArquivo.close();
-        }
-        catch (IOException e){
-            System.out.println("Erro: ");
-            e.printStackTrace();
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, e, () -> ERROR_PREFIX + "ao escrever no arquivo " + nomeArquivo);
         }
     }
 
-    public static void appendLinhaArquivo(String nomeArquivo, String linha){
-        try{
-            FileWriter fw = new FileWriter(nomeArquivo, true);
-            BufferedWriter bw = new BufferedWriter(fw);
+    public static void appendLinhaArquivo(String nomeArquivo, String linha) {
+        try (FileWriter fw = new FileWriter(nomeArquivo, true);
+             BufferedWriter bw = new BufferedWriter(fw)) {
+
             bw.write(linha);
             bw.newLine();
-            bw.close();
-        }
-        catch (Exception e){
-            e.printStackTrace();
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, e, () -> ERROR_PREFIX + "ao adicionar linha no arquivo " + nomeArquivo);
         }
     }
 
-    public static void lerArquivo(String nomeArquivo){
-        try{
-            File arquivo = new File(nomeArquivo);
-            Scanner leitorArquivo = new Scanner(arquivo);
-            while (leitorArquivo.hasNextLine()){
+    public static void lerArquivo(String nomeArquivo) {
+        File arquivo = new File(nomeArquivo);
+        try (Scanner leitorArquivo = new Scanner(arquivo)) {
+            while (leitorArquivo.hasNextLine()) {
                 String linha = leitorArquivo.nextLine();
-                System.out.println(linha);
+    
+                LOGGER.info(linha);
             }
-            leitorArquivo.close();
-        }
-        catch (IOException e){
-            System.out.println("Erro: ");
-            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            LOGGER.log(Level.SEVERE, e, () -> ERROR_PREFIX + "arquivo não encontrado: " + nomeArquivo);
         }
     }
 
-    public static ArrayList<String> listaLinhas(File arquivo){
-        ArrayList<String> listaLinhas = new ArrayList<String>();
+    public static List<String> listaLinhas(File arquivo) {
+        List<String> listaLinhas = new ArrayList<>();
 
-        try{
-            FileReader fr = new FileReader(arquivo);
-            BufferedReader br = new BufferedReader(fr);
+        try (FileReader fr = new FileReader(arquivo);
+             BufferedReader br = new BufferedReader(fr)) {
 
             String linha = br.readLine();
 
-            while (linha != null){
+            while (linha != null) {
                 listaLinhas.add(linha);
                 linha = br.readLine();
             }
-            br.close();
-            return listaLinhas;
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, e, () -> ERROR_PREFIX + "ao ler linhas do arquivo " + arquivo.getName());
         }
-        catch (IOException e){
-            System.out.println("erro");
-            e.printStackTrace();
-            return listaLinhas;
-        }
-        
+        return listaLinhas;
     }
 
-    // importante
-    public static List<String> obterListaLinhas(String nomeArquivo){
-        List<String> listaLinhas = new ArrayList<String>();
+    public static List<String> obterListaLinhas(String nomeArquivo) {
+        List<String> listaLinhas = new ArrayList<>();
 
-        try{
-            FileReader fr = new FileReader(nomeArquivo);
-            BufferedReader br = new BufferedReader(fr);
+        try (FileReader fr = new FileReader(nomeArquivo);
+             BufferedReader br = new BufferedReader(fr)) {
 
             String linha = br.readLine();
 
-            while (linha != null){
+            while (linha != null) {
                 listaLinhas.add(linha);
                 linha = br.readLine();
             }
-            br.close();
-            return listaLinhas;
+        } catch (IOException e) {
+
+            LOGGER.log(Level.WARNING, e, () -> ERROR_PREFIX + "ao obter linhas do arquivo " + nomeArquivo);
         }
-        catch (IOException e){
-            //System.out.println("erro");
-            //e.printStackTrace();
-            return listaLinhas;
-        }
+
+        return listaLinhas;
     }
 
-    public static String obterStringDeNullsCsv(int qntDeNulls){
+    public static String obterStringDeNullsCsv(int qntDeNulls) {
         String[] arrayNulls = new String[qntDeNulls];
 
-        for (int i = 0; i < qntDeNulls; i++){
+        for (int i = 0; i < qntDeNulls; i++) {
             arrayNulls[i] = "null";
         }
 
-        String stringDeNulls = String.join(",", arrayNulls);
-        return stringDeNulls;
+
+        return String.join(",", arrayNulls);
     }
 
-    // n ta funcionando
-    public void salvarObjetoParaArquivo(ArrayList<String> listaValoresAtributos, String nomeArquivo){
-        
-        /*
-        função que recebe um arrayList de Strings, 
-        que contem os valores dos atributos do objeto,
-        transforma esse arraylist em uma string e
-        salva essa string como uma linha no arquivo especificado
-        */
-        
+
+    public void salvarObjetoParaArquivo(List<String> listaValoresAtributos, String nomeArquivo) {
+
         String linhaParaArquivo = String.join(",", listaValoresAtributos);
 
-        try{
-            FileWriter fw = new FileWriter (nomeArquivo, true);
-            BufferedWriter bw = new BufferedWriter(fw);
+        try (FileWriter fw = new FileWriter(nomeArquivo, true);
+             BufferedWriter bw = new BufferedWriter(fw)) {
 
             bw.write(linhaParaArquivo);
             bw.newLine();
-            bw.close();
-        }
-        catch(Exception e){
-            System.out.println("erro, nao foi possivel realizar a operação");
-            e.printStackTrace();
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, e, () -> ERROR_PREFIX + "não foi possível salvar objeto no arquivo " + nomeArquivo);
         }
     }
 
-    // importante
-    // Em backend/FuncoesArquivos.java
-
+  
     public static void salvarListaEmArquivo(String nomeArquivo, List<String> listaLinhas, boolean append) {
         File arquivo = new File(nomeArquivo);
-        
-        // --- CORREÇÃO: CRIA AS PASTAS SE NÃO EXISTIREM ---
+
+    
         if (arquivo.getParentFile() != null && !arquivo.getParentFile().exists()) {
-            arquivo.getParentFile().mkdirs();
+            boolean dirsCriados = arquivo.getParentFile().mkdirs();
+            if (!dirsCriados) {
+                LOGGER.warning(() -> "Não foi possível criar diretórios para o arquivo: " + nomeArquivo);
+            }
         }
 
         try (FileWriter fw = new FileWriter(arquivo, append);
-            BufferedWriter bw = new BufferedWriter(fw)) {
+             BufferedWriter bw = new BufferedWriter(fw)) {
 
             for (String linha : listaLinhas) {
                 bw.write(linha);
                 bw.newLine();
             }
         } catch (IOException e) {
-            System.out.println("Erro ao escrever no arquivo: " + nomeArquivo);
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e, () -> ERROR_PREFIX + "ao escrever lista no arquivo: " + nomeArquivo);
         }
     }
 
-    // importante
-    public static void alterarInfoArquivo(String nomeArquivo, String infoReferencia, int posColunaInfo, String novaInfo){
+
+    public static void alterarInfoArquivo(String nomeArquivo, String infoReferencia,
+                                          int posColunaInfo, String novaInfo) {
         File arquivoAntigo = new File(nomeArquivo);
         File temp = new File("temp.txt");
 
-        try{
-            FileReader fr = new FileReader(arquivoAntigo);
-            BufferedReader br = new BufferedReader(fr);
-
-            FileWriter fw = new FileWriter(temp);
-            BufferedWriter bw = new BufferedWriter(fw);
+        try (FileReader fr = new FileReader(arquivoAntigo);
+             BufferedReader br = new BufferedReader(fr);
+             FileWriter fw = new FileWriter(temp);
+             BufferedWriter bw = new BufferedWriter(fw)) {
 
             String linha = br.readLine();
 
-            while (linha != null){
+            while (linha != null) {
                 String[] dadosLinha = linha.split(",");
                 String nome = dadosLinha[0];
-    
-                if (nome.equals(infoReferencia)){
+
+                if (nome.equals(infoReferencia)) {
                     dadosLinha[posColunaInfo] = novaInfo;
                     String novaLinha = String.join(",", dadosLinha);
                     bw.write(novaLinha);
-                }
-                else{
+                } else {
                     bw.write(linha);
                 }
 
                 bw.newLine();
                 linha = br.readLine();
             }
-            br.close();
-            bw.close();
-
-            arquivoAntigo.delete();
-            File destino = new File(nomeArquivo);
-            temp.renameTo(destino);
-
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, e, () -> ERROR_PREFIX + "não foi possível modificar o arquivo " + nomeArquivo);
+            return;
         }
-        catch (Exception e){
-            System.out.println("erro, não foi possivel modificar o arquivo");
-            e.printStackTrace();
+
+        try {
+            Path origem = temp.toPath();
+            Path destino = arquivoAntigo.toPath();
+            Files.move(origem, destino, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, e, () -> ERROR_PREFIX + "ao substituir arquivo " + nomeArquivo);
         }
     }
 
-    public static void alterarLinhaArquivo(String nomeArquivo, String nomeProcurado, String novaLinha){
+    public static void alterarLinhaArquivo(String nomeArquivo, String nomeProcurado, String novaLinha) {
         File arquivoAntigo = new File(nomeArquivo);
         File temp = new File("temp.txt");
 
-        try{
-            FileReader fr = new FileReader(arquivoAntigo);
-            BufferedReader br = new BufferedReader(fr);
-
-            FileWriter fw = new FileWriter(temp);
-            BufferedWriter bw = new BufferedWriter(fw);
+        try (FileReader fr = new FileReader(arquivoAntigo);
+             BufferedReader br = new BufferedReader(fr);
+             FileWriter fw = new FileWriter(temp);
+             BufferedWriter bw = new BufferedWriter(fw)) {
 
             String linha = br.readLine();
 
-            while (linha != null){
+            while (linha != null) {
                 String[] dadosLinha = linha.split(",");
                 String nome = dadosLinha[0];
-    
-                if (nome.equals(nomeProcurado)){
+
+                if (nome.equals(nomeProcurado)) {
                     bw.write(novaLinha);
-                }
-                else{
+                } else {
                     bw.write(linha);
                 }
 
                 bw.newLine();
                 linha = br.readLine();
             }
-            br.close();
-            bw.close();
-
-            arquivoAntigo.delete();
-            File destino = new File(nomeArquivo);
-            temp.renameTo(destino);
-
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, e, () -> ERROR_PREFIX + "não foi possível modificar o arquivo " + nomeArquivo);
+            return;
         }
-        catch (Exception e){
-            System.out.println("erro, não foi possivel modificar o arquivo");
-            e.printStackTrace();
+
+        try {
+            Path origem = temp.toPath();
+            Path destino = arquivoAntigo.toPath();
+            Files.move(origem, destino, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, e, () -> ERROR_PREFIX + "ao substituir arquivo " + nomeArquivo);
         }
     }
 
-    public static boolean checarExistenciaNomeArquivo(String nomeArquivo, String nomeProcurado){
-
-        boolean achou = false;
-
-        try{
-            FileReader fr = new FileReader(nomeArquivo);
-            BufferedReader br = new BufferedReader(fr);
+    public static boolean checarExistenciaNomeArquivo(String nomeArquivo, String nomeProcurado) {
+        try (FileReader fr = new FileReader(nomeArquivo);
+             BufferedReader br = new BufferedReader(fr)) {
 
             String linha = br.readLine();
 
-            while (linha != null){
+            while (linha != null) {
                 String[] dadosLinha = linha.split(",");
-                if (dadosLinha[0].equals(nomeProcurado)){
-                    achou = true;
-                    break;
+                if (dadosLinha[0].equals(nomeProcurado)) {
+                    return true;
                 }
                 linha = br.readLine();
             }
-            br.close();
-            return achou;
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, e, () -> ERROR_PREFIX + "ao verificar existência de nome no arquivo " + nomeArquivo);
         }
-        catch (Exception e){
-            e.printStackTrace();
-            return false;
-        }
-    }
 
-    
+        return false;
+    }
 }
