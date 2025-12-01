@@ -1,5 +1,7 @@
-package backend;
+package backend.integracao;
 
+import backend.Autenticacao;
+import backend.Endereco;
 import backend.usuario.PessoaFisica;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

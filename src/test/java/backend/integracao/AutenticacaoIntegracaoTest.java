@@ -1,7 +1,10 @@
-package backend;
+package backend.integracao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import backend.Autenticacao;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 

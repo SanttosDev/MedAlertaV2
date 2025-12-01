@@ -1,7 +1,10 @@
-package backend;
+package backend.integracao;
 
 import backend.usuario.Medico;
 import backend.usuario.PessoaFisica;
+import backend.Agenda;
+import backend.Endereco;
+import backend.Pessoa;
 import backend.farmacia.PessoaJuridica;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,5 +1,7 @@
-package backend;
+package backend.integracao;
 
+import backend.Endereco;
+import backend.Medicamento;
 import backend.farmacia.Estoque;
 import backend.farmacia.ItemEstoque;
 import backend.farmacia.PessoaJuridica;
