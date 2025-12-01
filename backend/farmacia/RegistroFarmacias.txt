@@ -1,0 +1,1 @@
+Farmacia de Teste Automatizado,11999990000,teste@farmacia.com,123456,CNPJ123,Rua Teste/100/Centro/null/null/null/null/null,null,null
