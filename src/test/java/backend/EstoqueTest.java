@@ -1,5 +1,5 @@
 package backend;
-import backend.Medicamento;
+
 import backend.farmacia.Estoque;
 import backend.farmacia.ItemEstoque;
 import org.junit.jupiter.api.BeforeEach;
