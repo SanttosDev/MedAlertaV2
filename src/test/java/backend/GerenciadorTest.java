@@ -1,9 +1,10 @@
 package backend;
+
 import backend.gerenciamento.Gerenciador;
 import backend.usuario.PessoaFisica;
 import backend.usuario.Uso;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
@@ -17,17 +18,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GerenciadorTest {
 
-    static PessoaFisica pessoaMock;
+    PessoaFisica pessoaMock;
 
-    @BeforeAll
-    static void setupPessoa() throws Exception {
+    @BeforeEach 
+    void setup() throws Exception {
+
         pessoaMock = mock(PessoaFisica.class);
-        when(pessoaMock.getNomeArquivoUsos()).thenReturn("arquivo_test.txt");
+        when(pessoaMock.getNomeArquivoUsos()).thenReturn("arquivo_test.txt"); 
 
         Method metodoSetPessoa = Gerenciador.class.getDeclaredMethod("setPessoa", PessoaFisica.class);
         metodoSetPessoa.setAccessible(true);
         metodoSetPessoa.invoke(null, pessoaMock);
     }
+    
 
     @Test
     void deveDetectarRemedioAcabandoTest() throws Exception {
@@ -38,48 +41,33 @@ class GerenciadorTest {
         when(usoMock.getRemedio()).thenReturn(remedioMock);
         when(usoMock.getQtdDisponivel()).thenReturn(5);
         when(usoMock.getDuracaoDoTratamento()).thenReturn(5); 
-        when(usoMock.getHorariosDeUso()).thenReturn(new ArrayList<>(java.util.List.of(8, 12))); 
+        when(usoMock.getHorariosDeUso()).thenReturn(new ArrayList<>(List.of(8, 12))); 
 
         Method metodo = Gerenciador.class.getDeclaredMethod("verificarQtdRemedio", Uso.class);
         metodo.setAccessible(true);
-
         boolean resultado = (boolean) metodo.invoke(null, usoMock);
-
 
         assertTrue(resultado, "Deveria avisar que precisa comprar mais remédio!");
     }
 
     @Test
-    void deveConfigurarPessoaTest() throws Exception {
-        PessoaFisica pessoaMock = mock(PessoaFisica.class);
-
-        Method metodoSetPessoa = Gerenciador.class.getDeclaredMethod("setPessoa", PessoaFisica.class);
-        metodoSetPessoa.setAccessible(true);
-        metodoSetPessoa.invoke(null, pessoaMock);
-
-        Field campoPessoa = Gerenciador.class.getDeclaredField("pessoa");
-        campoPessoa.setAccessible(true);
-        PessoaFisica pessoaAtual = (PessoaFisica) campoPessoa.get(null);
-
-        assertEquals(pessoaMock, pessoaAtual, "O campo 'pessoa' deve ser o mock configurado.");
-    }
-
-    @Test
     void naoDeveDetectarRemedioTest() throws Exception {
         Uso usoMock = mock(Uso.class);
+
         when(usoMock.getQtdDisponivel()).thenReturn(10); 
         when(usoMock.getDuracaoDoTratamento()).thenReturn(5);
-        when(usoMock.getHorariosDeUso()).thenReturn(new ArrayList<>(java.util.List.of(8, 12))); 
+        when(usoMock.getHorariosDeUso()).thenReturn(new ArrayList<>(List.of(8, 12))); 
 
         Method metodo = Gerenciador.class.getDeclaredMethod("verificarQtdRemedio", Uso.class);
         metodo.setAccessible(true);
         boolean resultado = (boolean) metodo.invoke(null, usoMock);
 
-        assertFalse(resultado, "Não deveria avisar que precisa comprar mais remédio.");
+        assertFalse(resultado, "Não deveria avisar que precisa comprar mais remédio se a quantidade é suficiente.");
     }
 
+
     @Test
-    void deveRetornarMenorTest() throws Exception {
+    void deveRetornarMenorIntervaloTest() throws Exception {
         Uso uso1 = mock(Uso.class);
         when(uso1.getIntervalo()).thenReturn(6); 
         Uso uso2 = mock(Uso.class);
@@ -87,7 +75,8 @@ class GerenciadorTest {
         Uso uso3 = mock(Uso.class);
         when(uso3.getIntervalo()).thenReturn(8);
 
-        ArrayList<Uso> listaMocks = new ArrayList<>(java.util.List.of(uso2, uso1, uso3));
+        ArrayList<Uso> listaMocks = new ArrayList<>(List.of(uso2, uso1, uso3));
+        
         Field campoListaDeUsos = Gerenciador.class.getDeclaredField("listaDeUsos");
         campoListaDeUsos.setAccessible(true);
         campoListaDeUsos.set(null, listaMocks);
@@ -106,42 +95,17 @@ class GerenciadorTest {
 
         Field campoListaDeUsos = Gerenciador.class.getDeclaredField("listaDeUsos");
         campoListaDeUsos.setAccessible(true);
-        campoListaDeUsos.set(null, new ArrayList<Uso>());
+        campoListaDeUsos.set(null, new ArrayList<Uso>()); // Lista vazia
 
         Method metodo = Gerenciador.class.getDeclaredMethod("verificarIntervaloDoGerenciador");
         metodo.setAccessible(true);
         int resultado = (int) metodo.invoke(null);
 
-        assertEquals(24, resultado, "Deve retornar 24");
+        assertEquals(24, resultado, "Deve retornar 24 (padrão) quando a lista de usos está vazia.");
     }
-  
+    
     @Test
-    void deveRetornarMenorIntervalotests() throws Exception {
-        Uso uso1 = mock(Uso.class);
-        when(uso1.getIntervalo()).thenReturn(12);
-        Uso uso2 = mock(Uso.class);
-        when(uso2.getIntervalo()).thenReturn(6);
-        Uso uso3 = mock(Uso.class);
-        when(uso3.getIntervalo()).thenReturn(8);
-
-        ArrayList<Uso> listaMocks = new ArrayList<>(List.of(uso1, uso2, uso3));
-
-        Field campoLista = Gerenciador.class.getDeclaredField("listaDeUsos");
-        campoLista.setAccessible(true);
-        campoLista.set(null, listaMocks);
-
-        Method metodo = Gerenciador.class.getDeclaredMethod("verificarIntervaloDoGerenciador");
-        metodo.setAccessible(true);
-        int resultado = (int) metodo.invoke(null);
-
-
-        assertEquals(6, resultado, "O menor intervalo encontrado deve ser 6.");
-        campoLista.set(null, new ArrayList<Uso>());
-    }
-
-
-    @Test
-    void atualizaArquivoSeDuracaonaoZero() throws Exception {
+    void atualizaArquivoSeDuracaoNaoZeroTest() throws Exception {
 
         Uso usoMock = mock(Uso.class);
         when(usoMock.getDuracaoDoTratamento()).thenReturn(5); 
@@ -157,18 +121,37 @@ class GerenciadorTest {
             metodo.setAccessible(true);
             metodo.invoke(null, usoMock);
 
+
             verify(usoMock).setDuracaoDoTratamento(4);
 
+ 
             funcoesArquivosMock.verify(() -> FuncoesArquivos.alterarLinhaArquivo(
-                "arquivo_test.txt", 
-                "RemedioA", 
-                "uso_string_atualizada"
+                eq("arquivo_test.txt"),
+                eq("RemedioA"), 
+                eq("uso_string_atualizada")
             ));
         }
     }
 
     @Test
-    void chamaRemoveUsoTestw() throws Exception {
+    void naoAtualizaArquivoSeDuracaoZeroTest() throws Exception {
+        Uso usoMock = mock(Uso.class);
+        when(usoMock.getDuracaoDoTratamento()).thenReturn(0); 
+
+        try (MockedStatic<FuncoesArquivos> funcoesArquivosMock = mockStatic(FuncoesArquivos.class)) {
+            
+            Method metodo = Gerenciador.class.getDeclaredMethod("atualizarDuracaoDeUso", Uso.class);
+            metodo.setAccessible(true);
+            metodo.invoke(null, usoMock);
+
+            verify(usoMock, never()).setDuracaoDoTratamento(anyInt());
+
+            funcoesArquivosMock.verify(() -> FuncoesArquivos.alterarLinhaArquivo(anyString(), anyString(), anyString()), never());
+        }
+    }
+
+    @Test
+    void deveChamarRemoveUsoNaPessoaTest() throws Exception {
         Uso usoMock = mock(Uso.class);
         Medicamento remedioMock = mock(Medicamento.class);
         when(remedioMock.getNome()).thenReturn("RemedioB");
