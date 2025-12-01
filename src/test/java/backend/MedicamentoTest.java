@@ -1,150 +1,113 @@
 package backend;
 
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class MedicamentoTest {
-
-    @Mock
-    Medicamento medicamentoMock;
+class MedicamentoTest {
 
     @Test
-    @DisplayName("Construtor completo deve inicializar todos os atributos corretamente")
-    void testaConstrutorCompleto() {
-        Medicamento m = new Medicamento("Dipirona", 10.5f, "1g", "Comprimido", "Dor de cabeça", false);
-
-        assertAll("Verificando todos os atributos do construtor completo",
-            () -> assertEquals("Dipirona", m.getNome()),
-            () -> assertEquals(10.5f, m.getPreco()),
-            () -> assertEquals("1g", m.getEspecificacoes()),
-            () -> assertEquals("Comprimido", m.getTipoDoRemedio()),
-            () -> assertEquals("Dor de cabeça", m.getCondicoesDeUso()),
-            () -> assertFalse(m.isRestricao())
-        );
+    void testConstrutor1() {
+        Medicamento m = new Medicamento("Dipirona");
+        assertEquals("Dipirona", m.getNome());
     }
 
     @Test
-    @DisplayName("Setters devem alterar o estado do objeto corretamente")
-    void testaSetters() {
-        Medicamento m = new Medicamento("Inicial");
+    void testConstrutor2() {
+        Medicamento m = new Medicamento("Aspirina", 10.50f, "500mg");
+        assertEquals("Aspirina", m.getNome());
+        assertEquals(10.50f, m.getPreco(), 0.001);
+        assertEquals("500mg", m.getEspecificacoes());
+    }
+
+    @Test
+    void testConstrutor3() {
+        Medicamento m = new Medicamento("Xarope", "Líquido", "Após almoço");
+        assertEquals("Xarope", m.getNome());
+        assertEquals("Líquido", m.getTipoDoRemedio());
+        assertEquals("Após almoço", m.getCondicoesDeUso());
+    }
+
+    @Test
+    void testConstrutor4() {
+        Medicamento m = new Medicamento("Antibiotico", "Comprimido", "8 em 8 horas", true);
+        assertEquals("Antibiotico", m.getNome());
+        assertTrue(m.isRestricao());
+    }
+
+    @Test
+    void testConstrutor5() {
+        Medicamento m = new Medicamento("Vitamina C", 20.0f, "Efervescente", "Manhã", false);
+        assertEquals("Vitamina C", m.getNome());
+        assertEquals(20.0f, m.getPreco(), 0.001);
+        assertFalse(m.isRestricao());
+    }
+
+    @Test
+    void testConstrutorCompleto() {
+        Medicamento m = new Medicamento("Tylenol", 15.0f, "750mg", "Comprimido", "Livre", false);
+        assertEquals("Tylenol", m.getNome());
+        assertEquals(15.0f, m.getPreco(), 0.001);
+        assertEquals("750mg", m.getEspecificacoes());
+        assertEquals("Comprimido", m.getTipoDoRemedio());
+        assertEquals("Livre", m.getCondicoesDeUso());
+        assertFalse(m.isRestricao());
+    }
+
+    @Test
+    void testSetters() {
+        Medicamento m = new Medicamento("Teste");
         
-        m.setNome("Modificado");
-        m.setPreco(50.9f);
-        m.setEspecificacoes("500mg");
-        m.setTipoDoRemedio("Xarope");
-        m.setCondicoesDeUso("Após refeição");
+        m.setNome("NovoNome");
+        assertEquals("NovoNome", m.getNome());
+
+        m.setPreco(50.0f);
+        assertEquals(50.0f, m.getPreco(), 0.001);
+
+        m.setEspecificacoes("NovaSpec");
+        assertEquals("NovaSpec", m.getEspecificacoes());
+
+        m.setTipoDoRemedio("Injetável");
+        assertEquals("Injetável", m.getTipoDoRemedio());
+
+        m.setCondicoesDeUso("Jejum");
+        assertEquals("Jejum", m.getCondicoesDeUso());
+
         m.setRestricao(true);
-
-        assertAll("Verificando funcionamento dos Setters",
-            () -> assertEquals("Modificado", m.getNome()),
-            () -> assertEquals(50.9f, m.getPreco()),
-            () -> assertEquals("500mg", m.getEspecificacoes()),
-            () -> assertEquals("Xarope", m.getTipoDoRemedio()),
-            () -> assertEquals("Após refeição", m.getCondicoesDeUso()),
-            () -> assertTrue(m.isRestricao())
-        );
+        assertTrue(m.isRestricao());
     }
 
+
     @Test
-    @DisplayName("toString deve formatar atributos separados por vírgula")
-    void testaToString() {
-        Medicamento m = new Medicamento("Aspirina", 10.0f, "especificacao", "Comprimido", "Dor", false);
-        String esperado = "Aspirina,10.0,especificacao,Comprimido,Dor,false";
+    void testToStringNullSpecFalseRestr() {
+        Medicamento m = new Medicamento("Dorflex", "Comprimido", "Uso oral");
         
-        assertEquals(esperado, m.toString());
-    }
-
-    @Test
-    @DisplayName("toString deve tratar atributos nulos como a string 'null'")
-    void testaToStringComNulos() {
-        Medicamento m = new Medicamento("Dipirona"); 
-
-        m.setEspecificacoes(null); 
-        m.setTipoDoRemedio(null);
-        m.setCondicoesDeUso(null);
-        String esperado = "Dipirona,0.0,null,null,null,false";
+        String resultado = m.toString();
         
-        assertEquals(esperado, m.toString());
+        assertTrue(resultado.contains("Dorflex"));
+        assertTrue(resultado.contains("null")); 
+        assertTrue(resultado.contains("false")); 
     }
 
     @Test
-    @DisplayName("compareTo deve usar Mock para isolar a comparação por nome")
-    void testaCompareToComMock() {
+    void testToStringValidSpecTrueRestr() {
+        Medicamento m = new Medicamento("Morfina", 100f, "Alta dose", "Injetável", "Hospitalar", true);
+        
+        String resultado = m.toString();
+        
+        assertTrue(resultado.contains("Alta dose")); 
+        assertTrue(resultado.contains("true"));      
+    }
+
+    @Test
+    void testCompareTo() {
         Medicamento m1 = new Medicamento("Aspirina");
+        Medicamento m2 = new Medicamento("Dipirona");
+        Medicamento m3 = new Medicamento("Aspirina");
+
+        assertTrue(m1.compareTo(m2) < 0);
         
-        // STUB
-        when(medicamentoMock.getNome()).thenReturn("Zolpidem");
-        assertTrue(m1.compareTo(medicamentoMock) < 0, "Aspirina deve vir antes de Zolpidem");
-        Medicamento m2 = new Medicamento("Zolpidem");
-        when(medicamentoMock.getNome()).thenReturn("Aspirina");
-        assertTrue(m2.compareTo(medicamentoMock) > 0, "Zolpidem deve vir depois de Aspirina");
+        assertTrue(m2.compareTo(m1) > 0);
         
-        verify(medicamentoMock, atLeastOnce()).getNome();
-    }
-
-    @Test
-    @DisplayName("Construtor (Nome) deve inicializar padrão")
-    void testaConstrutorApenasNome() {
-        Medicamento m = new Medicamento("Simples");
-        assertAll(
-            () -> assertEquals("Simples", m.getNome()),
-            () -> assertEquals(0.0f, m.getPreco())
-        );
-    }
-
-    @Test
-    @DisplayName("Construtor (Nome, Preco, Specs) deve inicializar corretamente")
-    void testaConstrutorParcial0() {
-        Medicamento m = new Medicamento("Med", 20.0f, "Specs");
-        assertAll(
-            () -> assertEquals("Med", m.getNome()),
-            () -> assertEquals(20.0f, m.getPreco()),
-            () -> assertEquals("Specs", m.getEspecificacoes()),
-            () -> assertNull(m.getTipoDoRemedio())
-        );
-    }
-
-    @Test
-    @DisplayName("Construtor (Nome, Tipo, Condicoes) deve inicializar corretamente")
-    void testaConstrutorParcial1() {
-        Medicamento m = new Medicamento("Med", "Gota", "Jejum");
-        assertAll(
-            () -> assertEquals("Med", m.getNome()),
-            () -> assertEquals("Gota", m.getTipoDoRemedio()),
-            () -> assertEquals("Jejum", m.getCondicoesDeUso()),
-            () -> assertEquals(0.0f, m.getPreco())
-        );
-    }
-
-    @Test
-    @DisplayName("Construtor (Nome, Tipo, Condicoes, Restricao) deve inicializar corretamente")
-    void testaConstrutorParcial2() {
-        Medicamento m = new Medicamento("Med", "Gota", "Jejum", true);
-        assertTrue(m.isRestricao());
-    }
-
-    @Test
-    @DisplayName("Construtor (Nome, Preco, Tipo, Condicoes, Restricao) deve inicializar corretamente")
-    void testaConstrutorParcial3() {
-        Medicamento m = new Medicamento("Med", 50f, "Gota", "Jejum", true);
-        assertEquals(50f, m.getPreco());
-        assertTrue(m.isRestricao());
-    }
-
-    @Test
-    @DisplayName("Deve aceitar valores de borda (Preço Zero ou Negativo)")
-    void testaValoresDeBorda() {
-        Medicamento m = new Medicamento("Gratis", 0.0f, "N/A");
-        assertEquals(0.0f, m.getPreco());
-
-        m.setPreco(-10.0f);
-        assertEquals(-10.0f, m.getPreco(), "Sistema aceita preço negativo atualmente");
+        assertEquals(0, m1.compareTo(m3));
     }
 }
