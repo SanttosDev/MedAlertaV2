@@ -7,16 +7,17 @@ package backend.dsdesktopnotify;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
-import java.net.URL;
 import javax.swing.ImageIcon;
 
 /**
  * A <code>NotifyTheme</code> defines the aspect of a desktop notification. You
  * can specify custom colors, icons and fonts to use instead of the two default
  * themes.
- * * By the way, the default themes included are <code>NotifyTheme.Dark</code>
+ * 
+ * By the way, the default themes included are <code>NotifyTheme.Dark</code>
  * and <code>NotifyTheme.Light</code>.
- * * @author DragShot
+ * 
+ * @author DragShot
  * @since  0.8
  */
 public class NotifyTheme {
@@ -42,22 +43,12 @@ public class NotifyTheme {
     /** The default set of icons */
     public static final Image[] defaultIconSet;
     
-    // Load the default icon set and themes safely
-    static {
+    //Load the default icon set and themes
+    static{
         defaultIconSet = new Image[8];
-        for(int i = 0; i < defaultIconSet.length; i++){
-            // Tenta localizar o recurso de forma segura
-            String path = "img/" + (i + 1) + ".png";
-            URL imgUrl = NotifyTheme.class.getResource(path);
-            
-            if (imgUrl != null) {
-                defaultIconSet[i] = new ImageIcon(imgUrl).getImage();
-            } else {
-                // Se não achar a imagem (ex: durante testes unitários), 
-                // define como null para não quebrar o programa.
-                defaultIconSet[i] = null;
-                // Opcional: System.err.println("Aviso: Imagem não encontrada no classpath: " + path);
-            }
+        for(int i=0;i<defaultIconSet.length;i++){
+            defaultIconSet[i] = new ImageIcon(DesktopNotify.class
+                    .getResource("img/"+(i+1)+".png")).getImage();
         }
         Dark = new DarkTheme();
         Light = new LightTheme();
@@ -69,29 +60,30 @@ public class NotifyTheme {
      */
     public static class DarkTheme extends NotifyTheme {
         public DarkTheme() {
-            titleFont = new Font("Verdana", Font.BOLD, 14);
-            contentFont = new Font("Verdana", Font.PLAIN, 12);
-            borderColor = new Color(50, 50, 50);
+            titleFont = new Font("Verdana",Font.BOLD,14);
+            contentFont = new Font("Verdana",Font.PLAIN,12);
+            borderColor = new Color(50,50,50);
             titleColor = Color.WHITE;
             contentColor = Color.WHITE;
             iconSet = defaultIconSet;
-            setBgGrad(new Color(50, 50, 50), new Color(59, 75, 91));
+            setBgGrad(new Color(50,50,50), new Color(59,75,91));
         }
     }
-        
+    
+    
     /**
      * The default Light theme. You can extend from this class to use it as base
      * for your own theme if you feel like it.
      */
     public static class LightTheme extends NotifyTheme {
         public LightTheme() {
-            titleFont = new Font("Verdana", Font.BOLD, 14);
-            contentFont = new Font("Verdana", Font.PLAIN, 12);
-            borderColor = new Color(200, 200, 200);
+            titleFont = new Font("Verdana",Font.BOLD,14);
+            contentFont = new Font("Verdana",Font.PLAIN,12);
+            borderColor = new Color(200,200,200);
             titleColor = Color.BLACK;
             contentColor = Color.BLACK;
             iconSet = defaultIconSet;
-            setBgGrad(new Color(240, 240, 240), new Color(169, 185, 201));
+            setBgGrad(new Color(240,240,240), new Color(169,185,201));
         }
     }
 
@@ -100,7 +92,6 @@ public class NotifyTheme {
      * highlighted gradient), stored in an array.
      */
     public Color[] getBgGrad() {
-        // Retorna apenas a cor base e a cor final do gradiente para evitar expor array interno inteiro
         return new Color[]{bgGrad[0], bgGrad[21]};
     }
 
@@ -109,18 +100,16 @@ public class NotifyTheme {
      * colors are precalculated to save CPU later.
      * @param base      The regular background color.
      * @param highlight The color to apply a gradient with when the mouse
-     * pointer is on the notification.
+     *                  pointer is on the notification.
      */
     public void setBgGrad(Color base, Color highlight) {
-        this.bgGrad = new Color[22]; // Base color + 21 gradient tones
+        this.bgGrad = new Color[22];//Base color + 21 gradient tones
         bgGrad[0] = base;
-        for(int i = 0; i < bgGrad.length - 1; i++){
-            bgGrad[i+1] = new Color(
-                base.getRed() + (int)((highlight.getRed() - base.getRed()) * i / 20.0F),
-                base.getGreen() + (int)((highlight.getGreen() - base.getGreen()) * i / 20.0F),
-                base.getBlue() + (int)((highlight.getBlue() - base.getBlue()) * i / 20.0F),
-                120 + (int)(135 * i / 20.0F)
-            );
+        for(int i=0;i<bgGrad.length-1;i++){
+            bgGrad[i+1] = new Color(base.getRed()+(int)((highlight.getRed()-base.getRed())*i/20.0F),
+                                base.getGreen()+(int)((highlight.getGreen()-base.getGreen())*i/20.0F),
+                                base.getBlue()+(int)((highlight.getBlue()-base.getBlue())*i/20.0F),
+                                120+(int)(135*i/20.0F));
         }
     }
 
@@ -151,7 +140,7 @@ public class NotifyTheme {
      * The icons should have a resolution of 32x32 pixels. Images that don't
      * comply with this will be scaled during the painting.
      * @param iconSet An array containing the set of icons which will be used in
-     * this theme.
+     *                this theme.
      */
     public void setIconSet(Image[] iconSet) {
         if (iconSet.length < 8)
@@ -188,37 +177,5 @@ public class NotifyTheme {
      */
     public void setTitleFont(Font titleFont) {
         this.titleFont = titleFont;
-    }
-
-    // --- GETTERS E SETTERS QUE FALTAVAM ---
-
-    /**
-     * @return The color used for the title text.
-     */
-    public Color getTitleColor() {
-        return titleColor;
-    }
-
-    /**
-     * Sets the color for the title text.
-     * @param titleColor The new title color.
-     */
-    public void setTitleColor(Color titleColor) {
-        this.titleColor = titleColor;
-    }
-
-    /**
-     * @return The color used for the content/message text.
-     */
-    public Color getContentColor() {
-        return contentColor;
-    }
-
-    /**
-     * Sets the color for the content/message text.
-     * @param contentColor The new content color.
-     */
-    public void setContentColor(Color contentColor) {
-        this.contentColor = contentColor;
     }
 }
