@@ -1,8 +1,5 @@
 package backend;
 
-import backend.Agenda;
-import backend.Endereco;
-import backend.FuncoesArquivos;
 import backend.farmacia.Estoque;
 import backend.farmacia.PessoaJuridica;
 import backend.usuario.PessoaFisica;
@@ -61,7 +58,6 @@ class PessoaJuridicaTest {
             pj.setCnpj("NOVO-CNPJ", false);
 
             assertEquals("NOVO-CNPJ", pj.getCnpj());
-            // nenhuma chamada ao alterarInfoArquivo
             funcoesMock.verifyNoInteractions();
         }
     }
@@ -188,7 +184,7 @@ class PessoaJuridicaTest {
 
         Agenda agenda = mock(Agenda.class);
         when(agenda.toString()).thenReturn("AGENDA_MOCK");
-        pj.setContatosClientes(agenda, false); // não mexe em arquivo aqui
+        pj.setContatosClientes(agenda, false); 
 
         PessoaFisica usuario = mock(PessoaFisica.class);
 
@@ -197,10 +193,8 @@ class PessoaJuridicaTest {
 
             pj.addUsuarioAosContatos(usuario);
 
-            // deve delegar para Agenda
             verify(agenda, times(1)).adicionarContato(usuario);
 
-            // dentro de addUsuarioAosContatos, ele chama setContatosClientes(..., true)
             funcoesMock.verify(() ->
                     FuncoesArquivos.alterarInfoArquivo(
                             PessoaJuridica.nomeArquivoFarmacias,
@@ -279,11 +273,9 @@ class PessoaJuridicaTest {
                 endereco
         );
 
-        // estoque != null
         Estoque estoque = mock(Estoque.class);
         pj.setEstoque(estoque, false);
 
-        // agenda != null
         Agenda agenda = mock(Agenda.class);
         when(agenda.toString()).thenReturn("AGENDA_MOCK");
         pj.setContatosClientes(agenda, false);
@@ -314,7 +306,6 @@ class PessoaJuridicaTest {
                 endereco
         );
 
-        // deixa endereco null, estoque null, contatos null
         pj.setEndereco(null, false);
         pj.setEstoque(null, false);
         pj.setContatosClientes(null, false);
