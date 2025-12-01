@@ -1,6 +1,5 @@
 package backend.dsdesktopnotify;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.BeforeClass;
 import static org.junit.Assert.*;
@@ -33,12 +32,15 @@ public class NotificationBuilderTest {
             return;
         }
         
+        NotificationBuilder builder = null;
         try {
-            NotificationBuilder builder = new NotificationBuilder();
-            assertNotNull("O construtor deve criar uma instância válida", builder);
+            builder = new NotificationBuilder();
         } catch (HeadlessException | ExceptionInInitializerError | NoClassDefFoundError e) {
             System.out.println("Teste pulado: ambiente sem suporte GUI completo");
+            return; // Encerra o teste se falhar na inicialização do ambiente
         }
+
+        assertNotNull("O construtor deve criar uma instância válida", builder);
     }
     
     @Test
@@ -48,13 +50,18 @@ public class NotificationBuilderTest {
             return;
         }
         
+        NotificationBuilder builder = null;
+        NotificationBuilder result = null;
+
         try {
-            NotificationBuilder builder = new NotificationBuilder();
-            NotificationBuilder result = builder.setTitle("Teste");
-            assertSame("setTitle deve retornar o mesmo builder", builder, result);
+            builder = new NotificationBuilder();
+            result = builder.setTitle("Teste");
         } catch (HeadlessException | ExceptionInInitializerError | NoClassDefFoundError e) {
             System.out.println("Teste pulado: ambiente sem suporte GUI completo");
+            return;
         }
+
+        assertSame("setTitle deve retornar o mesmo builder", builder, result);
     }
     
     @Test
@@ -64,13 +71,18 @@ public class NotificationBuilderTest {
             return;
         }
         
+        NotificationBuilder builder = null;
+        NotificationBuilder result = null;
+
         try {
-            NotificationBuilder builder = new NotificationBuilder();
-            NotificationBuilder result = builder.setMessage("Mensagem");
-            assertSame("setMessage deve retornar o mesmo builder", builder, result);
+            builder = new NotificationBuilder();
+            result = builder.setMessage("Mensagem");
         } catch (HeadlessException | ExceptionInInitializerError | NoClassDefFoundError e) {
             System.out.println("Teste pulado: ambiente sem suporte GUI completo");
+            return;
         }
+
+        assertSame("setMessage deve retornar o mesmo builder", builder, result);
     }
     
     @Test
@@ -80,17 +92,21 @@ public class NotificationBuilderTest {
             return;
         }
         
+        NotificationBuilder builder = null;
+        NotificationBuilder result = null;
+
         try {
-            NotificationBuilder builder = new NotificationBuilder();
-            NotificationBuilder result = builder
+            builder = new NotificationBuilder();
+            result = builder
                 .setTitle("Título")
                 .setMessage("Mensagem")
                 .setTimeOut(3000L);
-            
-            assertSame("Encadeamento deve retornar o mesmo builder", builder, result);
         } catch (HeadlessException | ExceptionInInitializerError | NoClassDefFoundError e) {
             System.out.println("Teste pulado: ambiente sem suporte GUI completo");
+            return;
         }
+            
+        assertSame("Encadeamento deve retornar o mesmo builder", builder, result);
     }
     
     @Test
@@ -100,14 +116,18 @@ public class NotificationBuilderTest {
             return;
         }
         
+        DesktopNotify notification = null;
+
         try {
             NotificationBuilder builder = new NotificationBuilder();
             builder.setTitle("Título de Teste");
-            DesktopNotify notification = builder.build();
-            assertNotNull("Build deve retornar uma notificação", notification);
+            notification = builder.build();
         } catch (HeadlessException | ExceptionInInitializerError | NoClassDefFoundError e) {
             System.out.println("Teste pulado: ambiente sem suporte GUI completo");
+            return;
         }
+
+        assertNotNull("Build deve retornar uma notificação", notification);
     }
     
     @Test
@@ -117,14 +137,18 @@ public class NotificationBuilderTest {
             return;
         }
         
+        DesktopNotify notification = null;
+
         try {
             NotificationBuilder builder = new NotificationBuilder();
             builder.setMessage("Mensagem de Teste");
-            DesktopNotify notification = builder.build();
-            assertNotNull("Build deve retornar uma notificação", notification);
+            notification = builder.build();
         } catch (HeadlessException | ExceptionInInitializerError | NoClassDefFoundError e) {
             System.out.println("Teste pulado: ambiente sem suporte GUI completo");
+            return;
         }
+
+        assertNotNull("Build deve retornar uma notificação", notification);
     }
     
     @Test(expected = IllegalStateException.class)
@@ -143,7 +167,6 @@ public class NotificationBuilderTest {
     
     @Test
     public void testMetodosExistem() {
-        // Testa se os métodos existem através de reflexão (não requer GUI)
         try {
             assertNotNull(NotificationBuilder.class.getMethod("setTitle", String.class));
             assertNotNull(NotificationBuilder.class.getMethod("setMessage", String.class));
