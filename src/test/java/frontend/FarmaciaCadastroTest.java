@@ -3,22 +3,20 @@ package frontend;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
+import org.junit.Assert; // Import standard JUnit Assert
 import org.junit.Test;
-
 import java.io.File;
-
 import static org.assertj.swing.finder.WindowFinder.findFrame;
 
 public class FarmaciaCadastroTest extends AssertJSwingJUnitTestCase {
 
     private FrameFixture window;
-    private final String ARQUIVO_FARMACIAS = "backend/farmacia/RegistroFarmacias.txt";
+    private final String arquivoFarmacias = "backend/farmacia/RegistroFarmacias.txt";
 
     @Override
     protected void onSetUp() {
         limparDadosDeTeste();
-
-        LoginFarmacia frame = GuiActionRunner.execute(() -> new LoginFarmacia());
+        LoginFarmacia frame = GuiActionRunner.execute(LoginFarmacia::new);
         window = new FrameFixture(robot(), frame);
         window.show();
     }
@@ -38,20 +36,26 @@ public class FarmaciaCadastroTest extends AssertJSwingJUnitTestCase {
         window.button("botaoCadastrar").click();
 
         FrameFixture homeFrame = findFrame(HomeDaFarmacia.class).using(robot());
-        homeFrame.requireVisible();
         
-        homeFrame.close(); 
+        homeFrame.requireVisible();
+
+        Assert.assertNotNull("A tela Home deve ser encontrada", homeFrame);
+        
+        homeFrame.close();
     }
 
     @Test
     public void deveExibirErroComCamposObrigatoriosVazios() {
         window.textBox("campoEmail").enterText("incompleto@teste.com");
         window.button("botaoCadastrar").click();
+        
         window.optionPane().requireInformationMessage().requireMessage("Precisa preencher todas as opções corretamente!");
+        
+        Assert.assertNotNull(window);
     }
-
+    
     private void limparDadosDeTeste() {
-        File arquivo = new File(ARQUIVO_FARMACIAS);
+        File arquivo = new File(arquivoFarmacias);
         if (arquivo.exists()) {
             arquivo.delete();
         }
