@@ -1,15 +1,11 @@
 package backend.usuario;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import backend.Agenda;
-import backend.Autenticacao;
 import backend.Endereco;
 import backend.FuncoesArquivos;
 import backend.Pessoa;
