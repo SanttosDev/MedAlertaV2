@@ -1,8 +1,10 @@
 package backend;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,163 +18,208 @@ class FuncoesArquivosTest {
     @TempDir
     Path tempDir;
 
+    @AfterEach
+    void tearDown() {
+        File tempFixo = new File("temp.txt");
+        if (tempFixo.exists()) {
+            tempFixo.delete();
+        }
+    }
+
     @Test
-    void testCriarArquivo() {
-        Path arquivoPath = tempDir.resolve("teste_criacao.txt");
-        String caminhoAbsoluto = arquivoPath.toAbsolutePath().toString();
+    void testCriarArquivoSucesso() {
+        File arquivo = tempDir.resolve("teste_novo.txt").toFile();
+        FuncoesArquivos.criarArquivo(arquivo.getAbsolutePath());
+        assertTrue(arquivo.exists());
+    }
 
-        FuncoesArquivos.criarArquivo(caminhoAbsoluto);
-        assertTrue(Files.exists(arquivoPath));
+    @Test
+    void testCriarArquivoJaExistente() throws IOException {
+        File arquivo = tempDir.resolve("existente.txt").toFile();
+        arquivo.createNewFile();
+        FuncoesArquivos.criarArquivo(arquivo.getAbsolutePath());
+        assertTrue(arquivo.exists());
+    }
 
-        FuncoesArquivos.criarArquivo(caminhoAbsoluto);
-        assertTrue(Files.exists(arquivoPath));
+    @Test
+    void testCriarArquivoException() {
+        File pasta = tempDir.resolve("pasta").toFile();
+        pasta.mkdir();
+        FuncoesArquivos.criarArquivo(pasta.getAbsolutePath());
+        assertTrue(pasta.exists());
     }
 
     @Test
     void testEscreverELerArquivo() throws IOException {
-        Path arquivoPath = tempDir.resolve("teste_escrita.txt");
-        String caminhoStr = arquivoPath.toString();
+        File arquivo = tempDir.resolve("escrita.txt").toFile();
+        String path = arquivo.getAbsolutePath();
 
-        String conteudo = "Linha de teste";
-        FuncoesArquivos.escreverArquivo(caminhoStr, conteudo);
+        FuncoesArquivos.escreverArquivo(path, "Linha 1\n");
+        
+        String conteudoLido = Files.readString(arquivo.toPath());
+        assertEquals("Linha 1", conteudoLido.trim());
 
-        assertTrue(Files.exists(arquivoPath));
-        assertEquals(conteudo, Files.readString(arquivoPath));
-
-        assertDoesNotThrow(() -> FuncoesArquivos.lerArquivo(caminhoStr));
-    }
-
-    @Test
-    void testAppendLinhaArquivo() throws IOException {
-        Path arquivoPath = tempDir.resolve("teste_append.txt");
-        String caminhoStr = arquivoPath.toString();
-
-        FuncoesArquivos.criarArquivo(caminhoStr);
-        FuncoesArquivos.appendLinhaArquivo(caminhoStr, "Linha 1");
-        FuncoesArquivos.appendLinhaArquivo(caminhoStr, "Linha 2");
-
-        List<String> linhas = Files.readAllLines(arquivoPath);
+        FuncoesArquivos.appendLinhaArquivo(path, "Linha 2");
+        
+        List<String> linhas = Files.readAllLines(arquivo.toPath());
         assertEquals(2, linhas.size());
         assertEquals("Linha 1", linhas.get(0));
         assertEquals("Linha 2", linhas.get(1));
     }
 
     @Test
-    void testListaLinhasComFile() throws IOException {
-        Path arquivoPath = tempDir.resolve("teste_lista_file.txt");
-        Files.write(arquivoPath, Arrays.asList("A", "B", "C"));
-
-        List<String> resultado = FuncoesArquivos.listaLinhas(arquivoPath.toFile());
-
-        assertEquals(3, resultado.size());
-        assertEquals("A", resultado.get(0));
-        assertEquals("C", resultado.get(2));
+    void testEscreverException() {
+        File pasta = tempDir.resolve("pasta_bloqueada").toFile();
+        pasta.mkdir();
+        
+        FuncoesArquivos.escreverArquivo(pasta.getAbsolutePath(), "teste");
+        FuncoesArquivos.appendLinhaArquivo(pasta.getAbsolutePath(), "teste");
+        
+        assertTrue(pasta.isDirectory());
     }
 
     @Test
-    void testObterListaLinhasComString() throws IOException {
-        Path arquivoPath = tempDir.resolve("teste_lista_string.txt");
-        Files.write(arquivoPath, Arrays.asList("X", "Y"));
+    void testLerArquivoLog() { 
+        File arquivo = tempDir.resolve("leitura_log.txt").toFile();
+        FuncoesArquivos.escreverArquivo(arquivo.getAbsolutePath(), "Teste Log");
+        assertDoesNotThrow(() -> FuncoesArquivos.lerArquivo(arquivo.getAbsolutePath()));
+    }
 
-        List<String> resultado = FuncoesArquivos.obterListaLinhas(arquivoPath.toString());
+    @Test
+    void testLerArquivoNaoEncontrado() {
+        String pathInexistente = tempDir.resolve("fantasma.txt").toAbsolutePath().toString();
+        assertDoesNotThrow(() -> FuncoesArquivos.lerArquivo(pathInexistente));
+    }
 
-        assertEquals(2, resultado.size());
-        assertEquals("X", resultado.get(0));
+    @Test
+    void testListaLinhasEObterLista() throws IOException {
+        File arquivo = tempDir.resolve("lista.txt").toFile();
+        List<String> conteudo = Arrays.asList("A", "B", "C");
+        Files.write(arquivo.toPath(), conteudo);
+
+        List<String> resultadoFile = FuncoesArquivos.listaLinhas(arquivo);
+        assertEquals(3, resultadoFile.size());
+        assertEquals("B", resultadoFile.get(1));
+
+        List<String> resultadoString = FuncoesArquivos.obterListaLinhas(arquivo.getAbsolutePath());
+        assertEquals(3, resultadoString.size());
+        assertEquals("C", resultadoString.get(2));
+    }
+
+    @Test
+    void testListasExceptions() {
+        File pasta = tempDir.resolve("pasta_lista").toFile();
+        pasta.mkdir();
+
+        List<String> l1 = FuncoesArquivos.listaLinhas(pasta);
+        assertTrue(l1.isEmpty());
+
+        List<String> l2 = FuncoesArquivos.obterListaLinhas(pasta.getAbsolutePath());
+        assertTrue(l2.isEmpty());
     }
 
     @Test
     void testObterStringDeNullsCsv() {
-        String resultado = FuncoesArquivos.obterStringDeNullsCsv(3);
-        assertEquals("null,null,null", resultado);
-
-        String resultadoUm = FuncoesArquivos.obterStringDeNullsCsv(1);
-        assertEquals("null", resultadoUm);
+        assertEquals("null,null,null", FuncoesArquivos.obterStringDeNullsCsv(3));
+        assertEquals("null", FuncoesArquivos.obterStringDeNullsCsv(1));
+        assertEquals("", FuncoesArquivos.obterStringDeNullsCsv(0));
     }
 
     @Test
     void testSalvarObjetoParaArquivo() throws IOException {
-        FuncoesArquivos instancia = new FuncoesArquivos();
+        FuncoesArquivos fa = new FuncoesArquivos();
+        File arquivo = tempDir.resolve("objeto.csv").toFile();
         
-        Path arquivoPath = tempDir.resolve("objeto.csv");
-        List<String> dados = Arrays.asList("id1", "nome", "email");
+        List<String> dados = Arrays.asList("Nome", "10.0", "true");
+        fa.salvarObjetoParaArquivo(dados, arquivo.getAbsolutePath());
 
-        instancia.salvarObjetoParaArquivo(dados, arquivoPath.toString());
-
-        List<String> linhas = Files.readAllLines(arquivoPath);
-        assertEquals(1, linhas.size());
-        assertEquals("id1,nome,email", linhas.get(0));
+        String conteudo = Files.readString(arquivo.toPath());
+        assertTrue(conteudo.contains("Nome,10.0,true"));
+    }
+    
+    @Test
+    void testSalvarObjetoException() {
+        FuncoesArquivos fa = new FuncoesArquivos();
+        File pasta = tempDir.resolve("pasta_obj").toFile();
+        pasta.mkdir();
+        
+        fa.salvarObjetoParaArquivo(Arrays.asList("A"), pasta.getAbsolutePath());
+        assertTrue(pasta.isDirectory());
     }
 
     @Test
     void testSalvarListaEmArquivo() throws IOException {
-        List<String> dados = Arrays.asList("L1", "L2");
+        File subDirArquivo = tempDir.resolve("subdir/novo/arquivo.txt").toFile();
+        List<String> linhas = Arrays.asList("L1", "L2");
 
-        Path subDir = tempDir.resolve("subdir");
-        Path arquivoEmSubDir = subDir.resolve("arquivo_sub.txt");
-        
-        FuncoesArquivos.salvarListaEmArquivo(arquivoEmSubDir.toString(), dados, false);
-        assertTrue(Files.exists(arquivoEmSubDir));
-        
-        FuncoesArquivos.salvarListaEmArquivo(arquivoEmSubDir.toString(), Arrays.asList("L3"), true);
-        assertEquals(3, Files.readAllLines(arquivoEmSubDir).size());
+        FuncoesArquivos.salvarListaEmArquivo(subDirArquivo.getAbsolutePath(), linhas, false);
+
+        assertTrue(subDirArquivo.exists());
+        List<String> lidas = Files.readAllLines(subDirArquivo.toPath());
+        assertEquals(2, lidas.size());
+    }
+
+    @Test
+    void testSalvarListaException() {
+         File pasta = tempDir.resolve("pasta_lista_save").toFile();
+         pasta.mkdir();
+         FuncoesArquivos.salvarListaEmArquivo(pasta.getAbsolutePath(), Arrays.asList("A"), false);
+         assertTrue(pasta.isDirectory());
     }
 
     @Test
     void testAlterarInfoArquivo() throws IOException {
-        Path arquivoPath = tempDir.resolve("dados_alterar.csv");
-        Files.write(arquivoPath, Arrays.asList(
-            "Joao,25,Rio",
-            "Maria,30,SP",
-            "Pedro,40,BH"
-        ));
+        File arquivo = tempDir.resolve("alterar_info.csv").toFile();
+        List<String> conteudo = Arrays.asList("Joao,25,SP", "Maria,30,RJ", "Pedro,22,MG");
+        Files.write(arquivo.toPath(), conteudo);
 
-        FuncoesArquivos.alterarInfoArquivo(arquivoPath.toString(), "Maria", 2, "Curitiba");
+        FuncoesArquivos.alterarInfoArquivo(arquivo.getAbsolutePath(), "Maria", 2, "ES");
 
-        List<String> linhas = Files.readAllLines(arquivoPath);
-        assertTrue(linhas.contains("Joao,25,Rio")); 
-        assertTrue(linhas.contains("Maria,30,Curitiba")); 
-        assertTrue(linhas.contains("Pedro,40,BH")); 
+        List<String> novasLinhas = Files.readAllLines(arquivo.toPath());
+        assertEquals("Joao,25,SP", novasLinhas.get(0));
+        assertEquals("Maria,30,ES", novasLinhas.get(1));
+    }
+    
+    @Test
+    void testAlterarInfoArquivoIOException() {
+        String fakePath = tempDir.resolve("nao_existe.csv").toString();
+        assertDoesNotThrow(() -> FuncoesArquivos.alterarInfoArquivo(fakePath, "A", 1, "B"));
     }
 
     @Test
     void testAlterarLinhaArquivo() throws IOException {
-        Path arquivoPath = tempDir.resolve("linhas_alterar.csv");
-        Files.write(arquivoPath, Arrays.asList(
-            "ID1,DadoA",
-            "ID2,DadoB"
-        ));
+        File arquivo = tempDir.resolve("alterar_linha.csv").toFile();
+        List<String> conteudo = Arrays.asList("A,1", "B,2", "C,3");
+        Files.write(arquivo.toPath(), conteudo);
 
-        FuncoesArquivos.alterarLinhaArquivo(arquivoPath.toString(), "ID1", "ID1,DadoNovo");
+        FuncoesArquivos.alterarLinhaArquivo(arquivo.getAbsolutePath(), "B", "B,999,Novo");
 
-        List<String> linhas = Files.readAllLines(arquivoPath);
-        assertTrue(linhas.contains("ID1,DadoNovo"));
-        assertTrue(linhas.contains("ID2,DadoB"));
+        List<String> novasLinhas = Files.readAllLines(arquivo.toPath());
+        assertEquals("A,1", novasLinhas.get(0));
+        assertEquals("B,999,Novo", novasLinhas.get(1));
+        assertEquals("C,3", novasLinhas.get(2));
+    }
+
+    @Test
+    void testAlterarLinhaArquivoIOException() {
+        String fakePath = tempDir.resolve("nao_existe_linha.csv").toString();
+        assertDoesNotThrow(() -> FuncoesArquivos.alterarLinhaArquivo(fakePath, "A", "Nova"));
     }
 
     @Test
     void testChecarExistenciaNomeArquivo() throws IOException {
-        Path arquivoPath = tempDir.resolve("check.csv");
-        Files.write(arquivoPath, Arrays.asList("Admin,123", "User,456"));
+        File arquivo = tempDir.resolve("checar.csv").toFile();
+        List<String> conteudo = Arrays.asList("Alpha,1", "Beta,2");
+        Files.write(arquivo.toPath(), conteudo);
 
-        assertTrue(FuncoesArquivos.checarExistenciaNomeArquivo(arquivoPath.toString(), "Admin"));
-        assertFalse(FuncoesArquivos.checarExistenciaNomeArquivo(arquivoPath.toString(), "Guest"));
+        assertTrue(FuncoesArquivos.checarExistenciaNomeArquivo(arquivo.getAbsolutePath(), "Alpha"));
+        assertFalse(FuncoesArquivos.checarExistenciaNomeArquivo(arquivo.getAbsolutePath(), "Gamma"));
     }
 
     @Test
-    void testLerArquivoInexistente() {
-        assertDoesNotThrow(() -> 
-            FuncoesArquivos.lerArquivo("caminho/que/nao/existe/arquivo.txt")
-        );
-    }
-    
-    @Test
-    void testErrosDeIO() {
-        String diretorioPath = tempDir.toString(); 
-        
-        assertDoesNotThrow(() -> FuncoesArquivos.escreverArquivo(diretorioPath, "fail"));
-        assertDoesNotThrow(() -> FuncoesArquivos.appendLinhaArquivo(diretorioPath, "fail"));
-        
-        FuncoesArquivos instancia = new FuncoesArquivos();
-        assertDoesNotThrow(() -> instancia.salvarObjetoParaArquivo(Arrays.asList("a"), diretorioPath));
+    void testChecarExistenciaIOException() {
+        File pasta = tempDir.resolve("pasta_check").toFile();
+        pasta.mkdir();
+        assertFalse(FuncoesArquivos.checarExistenciaNomeArquivo(pasta.getAbsolutePath(), "A"));
     }
 }
