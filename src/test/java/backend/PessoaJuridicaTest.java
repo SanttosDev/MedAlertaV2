@@ -7,7 +7,19 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.lang.reflect.Field;
+import java.nio.file.Path;
+import org.junit.jupiter.api.io.TempDir;
+import backend.Medicamento;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 class PessoaJuridicaTest {
@@ -23,6 +35,9 @@ class PessoaJuridicaTest {
                 endereco
         );
     }
+
+    @TempDir
+    Path tempDir;
 
 
     @Test
@@ -319,4 +334,80 @@ class PessoaJuridicaTest {
         assertEquals("null", parts[len - 2]); // estoque
         assertEquals("null", parts[len - 1]); // agenda
     }
+    @Test
+    void adicionarMedicamentoEstoqueDeveCriarEstoqueSeForNulo() {
+        PessoaJuridica pj = novaPessoaJuridicaBasica();
+
+        PessoaJuridica spyPj = spy(pj);
+        doNothing().when(spyPj).salvarEstoqueArquivo(); 
+        
+        assertNull(spyPj.getEstoque());
+
+        Medicamento med = new Medicamento("Dipirona", 5.0f, "500mg");
+
+
+        spyPj.adicionarMedicamentoEstoque(med, 10);
+
+
+        assertNotNull(spyPj.getEstoque());
+        assertEquals(1, spyPj.getEstoque().listaEstoque.size());
+        assertEquals("Dipirona", spyPj.getEstoque().listaEstoque.get(0).getMedicamento().getNome());
+
+        verify(spyPj, times(1)).setEstoque(any(Estoque.class), eq(true));
+    }
+    @Test
+    void retirarMedicamentoEstoqueNaoDeveQuebrarSeEstoqueForNulo() {
+        PessoaJuridica pj = novaPessoaJuridicaBasica();
+        assertNull(pj.getEstoque());
+
+        assertDoesNotThrow(() -> pj.retirarMedicamentoEstoque("Qualquer"));
+    }
+
+    @Test
+    void atualizarQntMedicamentoEstoqueDeveAdicionarSeNaoExistir() {
+
+        PessoaJuridica pj = novaPessoaJuridicaBasica();
+        PessoaJuridica spyPj = spy(pj);
+        doNothing().when(spyPj).salvarEstoqueArquivo();
+
+        Medicamento med = new Medicamento("Novalgina");
+
+        spyPj.atualizarQntMedicamentoEstoque(med, 20);
+
+        assertNotNull(spyPj.getEstoque());
+        assertEquals(20, spyPj.getEstoque().listaEstoque.get(0).getQntMedicamento());
+    }
+
+    @Test
+    void atualizarQntMedicamentoEstoqueDeveAlterarQuantidadeSeJaExistir() {
+        PessoaJuridica pj = novaPessoaJuridicaBasica();
+        PessoaJuridica spyPj = spy(pj);
+        doNothing().when(spyPj).salvarEstoqueArquivo();
+
+        Medicamento med = new Medicamento("Novalgina");
+        spyPj.adicionarMedicamentoEstoque(med, 10);
+
+        spyPj.atualizarQntMedicamentoEstoque(med, 50);
+
+        assertEquals(50, spyPj.getEstoque().listaEstoque.get(0).getQntMedicamento());
+    }
+    @Test
+    void salvarDadosArquivoDeveChamarFuncoesArquivosComListaCorreta() {
+        PessoaJuridica pj = novaPessoaJuridicaBasica();
+        
+        try (MockedStatic<FuncoesArquivos> funcoesMock = Mockito.mockStatic(FuncoesArquivos.class)) {
+            pj.salvarDadosArquivo();
+
+            funcoesMock.verify(() -> FuncoesArquivos.salvarListaEmArquivo(
+                eq(PessoaJuridica.nomeArquivoFarmacias), 
+                argThat(lista -> {
+
+                    return lista.size() == 1 && lista.get(0).contains(pj.getCnpj());
+                }), 
+                eq(true)
+            ));
+        }
+    }
+
+    
 }
