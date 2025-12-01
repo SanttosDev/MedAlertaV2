@@ -1,6 +1,7 @@
-package backend;
+package backend.gerenciamento;
 
-import backend.gerenciamento.Gerenciador;
+import backend.FuncoesArquivos;
+import backend.Medicamento;
 import backend.usuario.PessoaFisica;
 import backend.usuario.Uso;
 
